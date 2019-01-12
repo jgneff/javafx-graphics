@@ -175,7 +175,7 @@ class FramebufferY8 extends Framebuffer {
                 break;
             }
             default:
-                logger.severe("Unrecognized color depth: {0} bpp", bitDepth);
+                logger.severe("Unsupported color depth: {0} bpp", bitDepth);
                 throw new IllegalArgumentException();
         }
     }
@@ -231,7 +231,7 @@ class FramebufferY8 extends Framebuffer {
                 break;
             }
             default:
-                logger.severe("Unrecognized color depth: {0} bpp", bitDepth);
+                logger.severe("Unsupported color depth: {0} bpp", bitDepth);
                 throw new IllegalArgumentException();
         }
     }

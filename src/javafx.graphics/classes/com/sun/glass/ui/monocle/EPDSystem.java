@@ -105,19 +105,18 @@ class EPDSystem {
     /**
      * The Snapshot update scheme processes the contents of the frame buffer
      * immediately and stores the update in a memory buffer internal to the
-     * driver. When the IOCTL call to <code>MXCFB_SEND_UPDATE</code> returns,
-     * the frame buffer region is free and can be modified without affecting the
-     * update.
+     * driver. When the IOCTL call to MXCFB_SEND_UPDATE returns, the frame
+     * buffer region is free and can be modified without affecting the update.
      */
     static final int UPDATE_SCHEME_SNAPSHOT = 0;
 
     /**
      * The Queue update scheme uses a work queue to handle the processing of
      * updates asynchronously. When updates are submitted with the IOCTL
-     * <code>MXCFB_SEND_UPDATE</code>, they are added to the queue and processed
-     * in order as the EPDC hardware resources become available. The frame
-     * buffer contents processed and displayed, therefore, may not reflect what
-     * was present in the frame buffer when the update was sent.
+     * MXCFB_SEND_UPDATE, they are added to the queue and processed in order as
+     * the EPDC hardware resources become available. The frame buffer contents
+     * processed and displayed, therefore, may not reflect what was present in
+     * the frame buffer when the update was sent.
      */
     static final int UPDATE_SCHEME_QUEUE = 1;
 

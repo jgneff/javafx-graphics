@@ -163,7 +163,7 @@ class EPDFrameBuffer {
                 screen.setTransp(screen.p, 8, 24);
                 break;
             default:
-                logger.severe("Unrecognized color depth: {0} bpp", settings.bitsPerPixel);
+                logger.severe("Unsupported color depth: {0} bpp", settings.bitsPerPixel);
                 throw new IllegalArgumentException();
         }
         screen.setActivate(screen.p, EPDSystem.FB_ACTIVATE_FORCE);
@@ -186,12 +186,12 @@ class EPDFrameBuffer {
         byteOffset = (xoffset + yoffset * xresVirtual) * bytesPerPixel;
 
         /*
-         * Allocates update data objects for reuse to avoid creating a new one
-         * for each display update, which could be up to 60 per second. These
-         * objects are actually direct byte buffers.
+         * Allocates update data objects for reuse to avoid creating new ones
+         * for each display update, which could be up to 60 per second. (These
+         * objects contain direct byte buffers off the Java heap.)
          */
         updateData = new MxcfbUpdateData();
-        syncUpdate = createDefaultUpdate(settings, xres, yres);
+        syncUpdate = createDefaultUpdate(xres, yres);
     }
 
     /**
@@ -262,14 +262,19 @@ class EPDFrameBuffer {
     /**
      * Creates the default update data with values from the EPD system
      * properties, setting all fields except for the update marker. Reusing this
-     * object avoids creating a new MxcfbUpdateData for each application update.
+     * object avoids creating a new MxcfbUpdateData for each update request.
+     * <p>
+     * <b>Note:</b> An update mode of {@link EPDSystem#UPDATE_MODE_FULL} would
+     * make the {@link EPDSettings#NO_WAIT} system property useless by changing
+     * all non-colliding updates into colliding ones, so this method sets the
+     * default update mode to {@link EPDSystem#UPDATE_MODE_PARTIAL}.
      *
-     * @param settings the EPD system settings.
      * @param width the width of the update region.
      * @param height the height of the update region.
-     * @return the default update data, with all but the update marker defined.
+     * @return the default update data, with all fields but the update marker
+     * defined.
      */
-    private MxcfbUpdateData createDefaultUpdate(EPDSettings settings, int width, int height) {
+    private MxcfbUpdateData createDefaultUpdate(int width, int height) {
         var update = new MxcfbUpdateData();
         update.setUpdateRegion(update.p, 0, 0, width, height);
         update.setWaveformMode(update.p, settings.waveformMode);
@@ -306,7 +311,7 @@ class EPDFrameBuffer {
         int rc = system.ioctl(fd, driver.MXCFB_SET_WAVEFORM_MODES, modes.p);
         if (rc != 0) {
             logger.severe("Failed setting waveform modes: {0} ({1})",
-                    system.getErrorMessage(), rc);
+                    system.getErrorMessage(), system.errno());
         }
     }
 
@@ -322,7 +327,7 @@ class EPDFrameBuffer {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_TEMPERATURE, temp);
         if (rc != 0) {
             logger.severe("Failed setting temperature: {0} ({1})",
-                    system.getErrorMessage(), rc);
+                    system.getErrorMessage(), system.errno());
         }
     }
 
@@ -348,40 +353,8 @@ class EPDFrameBuffer {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_AUTO_UPDATE_MODE, mode);
         if (rc != 0) {
             logger.severe("Failed setting auto-update mode: {0} ({1})",
-                    system.getErrorMessage(), rc);
+                    system.getErrorMessage(), system.errno());
         }
-    }
-
-    /**
-     * Requests an update to the display, allowing for the reuse of the update
-     * data object. The waveform mode is reset because the update data might
-     * have been used in a previous update. In that case, the waveform mode may
-     * have been modified by the EPDC driver with the actual mode selected. The
-     * update marker field of the update data will be overwritten with the next
-     * sequential marker value.
-     *
-     * @param update the data describing the update. The waveform mode and
-     * update marker will be overwritten.
-     * @param waveformMode the waveform mode for this update.
-     * @return the marker value to identify this update in a subsequence call to
-     * {@link #waitForUpdateComplete}.
-     */
-    private int sendUpdate(MxcfbUpdateData update, int waveformMode) {
-        updateMarker++;
-        update.setWaveformMode(update.p, waveformMode);
-        update.setUpdateMarker(update.p, updateMarker);
-        int rc = system.ioctl(fd, driver.MXCFB_SEND_UPDATE, update.p);
-        if (rc != 0) {
-            logger.severe("Failed sending update #{2}: {0} ({1})",
-                    system.getErrorMessage(), rc, Integer.toUnsignedLong(updateMarker));
-        } else if (TRACING_ENABLED && logger.isLoggable(Level.FINER)) {
-            logger.finer("Sent update: {0} × {1} px, waveform {2}, selected {3}, flags 0x{4}, marker {5}",
-                    update.getUpdateRegionWidth(update.p), update.getUpdateRegionHeight(update.p),
-                    waveformMode, update.getWaveformMode(update.p),
-                    Integer.toHexString(update.getFlags(update.p)).toUpperCase(),
-                    Integer.toUnsignedLong(updateMarker));
-        }
-        return updateMarker;
     }
 
     /**
@@ -420,6 +393,44 @@ class EPDFrameBuffer {
     }
 
     /**
+     * Requests an update to the display, allowing for the reuse of the update
+     * data object. The waveform mode is reset because the update data could
+     * have been used in a previous update. In that case, the waveform mode may
+     * have been modified by the EPDC driver with the actual mode selected. The
+     * update marker field is overwritten with the next sequential marker value.
+     *
+     * @param update the data describing the update. The waveform mode and
+     * update marker will be overwritten.
+     * @param waveformMode the waveform mode for this update.
+     * @return the marker value to identify this update in a subsequence call to
+     * {@link #waitForUpdateComplete}.
+     */
+    private int sendUpdate(MxcfbUpdateData update, int waveformMode) {
+        /*
+         * An update marker of zero returns "Invalid argument (22)" from the
+         * IOCTL call to MXCFB_WAIT_FOR_UPDATE_COMPLETE.
+         */
+        updateMarker++;
+        if (updateMarker == 0) {
+            updateMarker++;
+        }
+        update.setWaveformMode(update.p, waveformMode);
+        update.setUpdateMarker(update.p, updateMarker);
+        int rc = system.ioctl(fd, driver.MXCFB_SEND_UPDATE, update.p);
+        if (rc != 0) {
+            logger.severe("Failed sending update {2}: {0} ({1})",
+                    system.getErrorMessage(), system.errno(), Integer.toUnsignedLong(updateMarker));
+        } else if (logger.isLoggable(Level.FINER)) {
+            logger.finer("Sent update: {0} × {1}, waveform {2}, selected {3}, flags 0x{4}, marker {5}",
+                    update.getUpdateRegionWidth(update.p), update.getUpdateRegionHeight(update.p),
+                    waveformMode, update.getWaveformMode(update.p),
+                    Integer.toHexString(update.getFlags(update.p)).toUpperCase(),
+                    Integer.toUnsignedLong(updateMarker));
+        }
+        return updateMarker;
+    }
+
+    /**
      * Blocks and waits for a previous update request to complete.
      *
      * @param marker the marker value used to identify a particular update,
@@ -427,9 +438,19 @@ class EPDFrameBuffer {
      */
     private void waitForUpdateComplete(int marker) {
         int rc = driver.ioctl(fd, driver.MXCFB_WAIT_FOR_UPDATE_COMPLETE, marker);
+        /*
+         * Returns: 0 if the marker was not found because the update already
+         * completed (or failed), -1 with errno ETIMEDOUT (110) if the wait
+         * timed out after 5 seconds, or the positive value returned from the
+         * Linux kernel function "wait_for_completion_timeout" if a wait
+         * occurred and completed (see "kernel/sched/completion.c").
+         */
         if (rc < 0) {
-            logger.severe("Failed waiting for update #{2}: {0} ({1})",
-                    system.getErrorMessage(), rc, marker);
+            logger.severe("Failed waiting for update {2}: {0} ({1})",
+                    system.getErrorMessage(), system.errno(), marker);
+        } else if (rc == 0 && logger.isLoggable(Level.FINER)) {
+            logger.finer("No wait for update {0}: already completed",
+                    Integer.toUnsignedLong(marker));
         }
     }
 
@@ -445,7 +466,7 @@ class EPDFrameBuffer {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_PWRDOWN_DELAY, delay);
         if (rc != 0) {
             logger.severe("Failed setting power-down delay: {0} ({1})",
-                    system.getErrorMessage(), rc);
+                    system.getErrorMessage(), system.errno());
         }
     }
 
@@ -459,7 +480,7 @@ class EPDFrameBuffer {
         int rc = system.ioctl(fd, driver.MXCFB_GET_PWRDOWN_DELAY, integer.p);
         if (rc != 0) {
             logger.severe("Failed getting power-down delay: {0} ({1})",
-                    system.getErrorMessage(), rc);
+                    system.getErrorMessage(), system.errno());
         }
         return integer.getInteger(integer.p);
     }
@@ -478,12 +499,37 @@ class EPDFrameBuffer {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_UPDATE_SCHEME, scheme);
         if (rc != 0) {
             logger.severe("Failed setting update scheme: {0} ({1})",
-                    system.getErrorMessage(), rc);
+                    system.getErrorMessage(), system.errno());
         }
     }
 
     /**
-     * Initializes the EPDC frame buffer device.
+     * Initializes the EPDC frame buffer device, setting the update scheme to
+     * {@link EPDSystem#UPDATE_SCHEME_SNAPSHOT}.
+     * <p>
+     * <b>Notes:</b>
+     * <p>
+     * In the following notes, <i>synchronization</i> means waiting for the
+     * previous update to complete before sending the next update. Regarding the
+     * update scheme, there are really just two alternatives: Snapshot or Queue.
+     * The third scheme, Queue and Merge, without synchronization will combine
+     * separate colliding frames, and with synchronization is the same as the
+     * Queue scheme.
+     * <p>
+     * The Snapshot scheme allows for writing the next update to the frame
+     * buffer while the EPDC driver is busy displaying the previous update. With
+     * this scheme, a 32-bit frame buffer can even be used directly as the
+     * composition buffer, avoiding a copying step for each frame. In the Queue
+     * scheme, on the other hand, the composition buffer must be off-screen and
+     * copied to the frame buffer only after the previous update completes.
+     * Testing on an 800-Mhz device with a display size of 800 × 600 pixels
+     * showed the Snapshot scheme to be about 16 ms faster for each frame.
+     * <p>
+     * So in summary, without synchronization, when update collisions occur, the
+     * Queue scheme misses frames, the Queue and Merge scheme combines frames,
+     * and the Snapshot scheme may run out of the driver's internal buffers.
+     * With synchronization, in which collisions cannot occur, the Snapshot
+     * scheme runs slightly faster than the other two schemes.
      */
     void init() {
         setWaveformModes(EPDSystem.WAVEFORM_MODE_INIT, EPDSystem.WAVEFORM_MODE_DU,

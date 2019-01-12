@@ -91,20 +91,20 @@ public class FramebufferY8Test {
      * @param bytesPerPixel the number of bytes per pixel in the output buffer.
      */
     private void copyTest(int bitsPerPixel, int bytesPerPixel) {
-        var oldFB = new FramebufferY8ParentShim(bb, width, height, bitsPerPixel, true);
-        var oldBuffer = ByteBuffer.allocate(width * height * bytesPerPixel);
-        oldFB.copyToBuffer(oldBuffer);
-        oldBuffer.flip();
+        var oldSource = new FramebufferY8ParentShim(bb, width, height, bitsPerPixel, true);
+        var oldTarget = ByteBuffer.allocate(width * height * bytesPerPixel);
+        oldSource.copyToBuffer(oldTarget);
+        oldTarget.flip();
 
-        var newFB = new FramebufferY8Shim(bb, width, height, bitsPerPixel, true);
-        var newBuffer = ByteBuffer.allocate(width * height * bytesPerPixel);
-        newFB.copyToBuffer(newBuffer);
-        newBuffer.flip();
+        var newSource = new FramebufferY8Shim(bb, width, height, bitsPerPixel, true);
+        var newTarget = ByteBuffer.allocate(width * height * bytesPerPixel);
+        newSource.copyToBuffer(newTarget);
+        newTarget.flip();
 
-        if (oldBuffer.hasArray() && newBuffer.hasArray()) {
-            Assert.assertArrayEquals(oldBuffer.array(), newBuffer.array());
+        if (oldTarget.hasArray() && newTarget.hasArray()) {
+            Assert.assertArrayEquals(oldTarget.array(), newTarget.array());
         } else {
-            Assert.assertEquals(oldBuffer, newBuffer);
+            Assert.assertEquals(oldTarget, newTarget);
         }
     }
 
@@ -117,19 +117,19 @@ public class FramebufferY8Test {
      * @throws IOException if an error occurs writing to an output channel.
      */
     private void writeTest(int bitsPerPixel, int bytesPerPixel) throws IOException {
-        var oldFB = new FramebufferY8ParentShim(bb, width, height, bitsPerPixel, true);
-        var oldStream = new ByteArrayOutputStream(width * height * bytesPerPixel);
-        try (var oldChannel = Channels.newChannel(oldStream)) {
-            oldFB.write(oldChannel);
+        var oldSource = new FramebufferY8ParentShim(bb, width, height, bitsPerPixel, true);
+        var oldTarget = new ByteArrayOutputStream(width * height * bytesPerPixel);
+        try (var oldChannel = Channels.newChannel(oldTarget)) {
+            oldSource.write(oldChannel);
         }
 
-        var newFB = new FramebufferY8Shim(bb, width, height, bitsPerPixel, true);
-        var newStream = new ByteArrayOutputStream(width * height * bytesPerPixel);
-        try (var newChannel = Channels.newChannel(newStream)) {
-            newFB.write(newChannel);
+        var newSource = new FramebufferY8Shim(bb, width, height, bitsPerPixel, true);
+        var newTarget = new ByteArrayOutputStream(width * height * bytesPerPixel);
+        try (var newChannel = Channels.newChannel(newTarget)) {
+            newSource.write(newChannel);
         }
 
-        Assert.assertArrayEquals(oldStream.toByteArray(), newStream.toByteArray());
+        Assert.assertArrayEquals(oldTarget.toByteArray(), newTarget.toByteArray());
     }
 
     /**
