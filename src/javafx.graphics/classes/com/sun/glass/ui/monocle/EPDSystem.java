@@ -91,7 +91,7 @@ class EPDSystem {
 
     /**
      * Region update mode, in which updates to the display must be submitted
-     * with the {@link #MXCFB_SEND_UPDATE} IOCTL.
+     * with an IOCTL call to {@link #MXCFB_SEND_UPDATE}.
      */
     static final int AUTO_UPDATE_MODE_REGION_MODE = 0;
 
@@ -105,18 +105,19 @@ class EPDSystem {
     /**
      * The Snapshot update scheme processes the contents of the frame buffer
      * immediately and stores the update in a memory buffer internal to the
-     * driver. When the IOCTL call to MXCFB_SEND_UPDATE returns, the frame
-     * buffer region is free and can be modified without affecting the update.
+     * driver. When the IOCTL call to {@link #MXCFB_SEND_UPDATE} returns, the
+     * frame buffer region is free and can be modified without affecting the
+     * update.
      */
     static final int UPDATE_SCHEME_SNAPSHOT = 0;
 
     /**
      * The Queue update scheme uses a work queue to handle the processing of
-     * updates asynchronously. When updates are submitted with the IOCTL
-     * MXCFB_SEND_UPDATE, they are added to the queue and processed in order as
-     * the EPDC hardware resources become available. The frame buffer contents
-     * processed and displayed, therefore, may not reflect what was present in
-     * the frame buffer when the update was sent.
+     * updates asynchronously. When updates are submitted with an IOCTL call to
+     * {@link #MXCFB_SEND_UPDATE}, they are added to the queue and processed in
+     * order as the EPDC hardware resources become available. The frame buffer
+     * contents processed and displayed, therefore, may not reflect what was
+     * present in the frame buffer when the update was sent.
      */
     static final int UPDATE_SCHEME_QUEUE = 1;
 
@@ -261,9 +262,9 @@ class EPDSystem {
 
     /**
      * Obtains the single instance of EPDSystem. Calling this method requires
-     * the RuntimePermission <code>loadLibrary.*</code>. The
-     * {@link #loadLibrary} method must be called on the EPDSystem instance
-     * before any system calls can be made using it.
+     * the RuntimePermission "loadLibrary.*". The {@link #loadLibrary} method
+     * must be called on the EPDSystem instance before any system calls can be
+     * made using it.
      *
      * @return the EPDSystem instance.
      */
@@ -339,7 +340,8 @@ class EPDSystem {
         NativeLibLoader.loadLibrary("glass_monocle_epd");
 
         /*
-         * IOCTL codes require the native library for the "sizeof" function.
+         * Creating the IOCTL request codes requires the native library for the
+         * "sizeof" function.
          */
         var modes = new MxcfbWaveformModes();
         var update = new MxcfbUpdateData();
@@ -365,7 +367,7 @@ class EPDSystem {
      * @param request a device-dependent request code.
      * @param value the integer value.
      * @return On success zero is returned. On error, -1 is returned, and
-     * <code>errno</code> is set appropriately.
+     * <i>errno</i> is set appropriately.
      */
     native int ioctl(long fd, int request, int value);
 

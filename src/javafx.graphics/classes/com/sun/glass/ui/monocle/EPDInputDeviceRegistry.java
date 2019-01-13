@@ -52,8 +52,8 @@ import java.util.Map;
  * LinuxInputDevice.</dd>
  * <dt>{@link #addDeviceInternal}</dt>
  * <dd>to work around older versions of <i>udev</i>, such as version 142, which
- * do not return the property <code>ID_INPUT_TOUCHSCREEN</code> for the touch
- * screen device. The property value <code>ID_INPUT_TOUCHSCREEN=1</code> is
+ * do not return the property ID_INPUT_TOUCHSCREEN=1 for the touch
+ * screen device. That property and value is
  * required by {@link LinuxInputDevice#isTouch} to detect a touch screen device.
  * Otherwise, the method returns <code>false</code> and the touch screen is
  * mistakenly given a keyboard input processor. Newer versions of <i>udev</i>,
@@ -134,9 +134,9 @@ class EPDInputDeviceRegistry extends InputDeviceRegistry {
      * its LinuxInputDevice.
      *
      * @param devNode the file representing the device name, such as
-     * <code>/dev/input/event1</code>.
+     * <i>/dev/input/event1</i>.
      * @param sysPath the system path to the device, such as
-     * <code>/sys/devices/virtual/input/input1/event1</code>.
+     * <i>/sys/devices/virtual/input/input1/event1</i>.
      * @param udevManifest the set of properties for the device.
      * @return the new LinuxInputDevice, or <code>null</code> if no processor is
      * found for the device.
@@ -168,7 +168,7 @@ class EPDInputDeviceRegistry extends InputDeviceRegistry {
      * event terminator for keypad events.
      *
      * @param device the LinuxInputDevice.
-     * @param name the device name, such as <code>/dev/input/event0</code>.
+     * @param name the device name, such as <i>/dev/input/event0</i>.
      * @return the LinuxInputDevice, or <code>null</code> if no input processor
      * is found for the device.
      */
