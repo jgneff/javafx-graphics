@@ -101,14 +101,14 @@ class EPDScreen implements NativeScreen {
             /*
              * If the Linux frame buffer has 32-bit pixels in ARGB32 format,
              * compose the pixels directly into it. Otherwise, compose the
-             * pixels to an off-screen buffer and write them to the frame buffer
-             * file channel.
+             * pixels into an off-screen buffer and write them to the frame
+             * buffer file channel.
              *
              * With an LCD display, there must be space for two full screens to
              * be able to render directly into the frame buffer, displaying one
-             * while updating the other. The "snapshot" update mode of an
-             * e-paper display, though, allows us to reuse the same frame buffer
-             * region immediately after sending an update.
+             * while updating the other. The Snapshot update mode of an e-paper
+             * display, though, allows us to reuse the same frame buffer region
+             * immediately after sending an update.
              */
             if (bitDepth == Integer.SIZE) {
                 fbMapping = fbDevice.getMappedBuffer();

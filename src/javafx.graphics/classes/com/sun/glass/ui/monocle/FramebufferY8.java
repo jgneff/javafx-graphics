@@ -123,9 +123,8 @@ class FramebufferY8 extends Framebuffer {
      * converting the pixel format as necessary.
      * <p>
      * <b>Note:</b> When multi-core processors and high-resolution screens are
-     * common in embedded devices, consider converting the pixels with a
-     * parallel stream operation instead of using <i>for loops</i>, such as:
-     * <code>IntStream.range(0, srcPixels.capacity()).parallel().forEach((i) -&gt; {...})</code>.
+     * more common in embedded devices, consider converting the pixels with a
+     * parallel stream operation instead of using <i>for loops</i>.
      *
      * @param out the output channel.
      * @throws IOException if an error occurs writing to the channel.

@@ -30,8 +30,8 @@ import java.security.Permission;
 /**
  * EPDSystem provides a Java-language interface to the device API of the
  * Electrophoretic Display Controller (EPDC) frame buffer driver. EPDSystem is a
- * singleton. Its instance is obtained by calling
- * {@link EPDSystem#getEPDSystem}. This class also extends
+ * singleton. Its instance is obtained by calling the
+ * {@link EPDSystem#getEPDSystem} method. This class also extends
  * {@link LinuxSystem.FbVarScreenInfo} to provide extra fields in
  * <code>fb_var_screeninfo</code> defined in <i>linux/fb.h</i>.
  * <p>

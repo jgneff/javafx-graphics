@@ -52,9 +52,9 @@ import java.util.Map;
  * LinuxInputDevice.</dd>
  * <dt>{@link #addDeviceInternal}</dt>
  * <dd>to work around older versions of <i>udev</i>, such as version 142, which
- * do not return the property ID_INPUT_TOUCHSCREEN=1 for the touch
- * screen device. That property and value is
- * required by {@link LinuxInputDevice#isTouch} to detect a touch screen device.
+ * do not return the property ID_INPUT_TOUCHSCREEN=1 for the touch screen
+ * device. That property and value is required by the
+ * {@link LinuxInputDevice#isTouch} method to detect a touch screen device.
  * Otherwise, the method returns <code>false</code> and the touch screen is
  * mistakenly given a keyboard input processor. Newer versions of <i>udev</i>,
  * such as version 204, correctly return this property.</dd>
@@ -160,12 +160,12 @@ class EPDInputDeviceRegistry extends InputDeviceRegistry {
      * # input-events 1
      * </pre>
      * <b>Note:</b> The "mxckpd" keypad device driver does not generate EV_SYN
-     * events, but {@link LinuxInputDevice#run} schedules an event for
-     * processing only after receiving the EV_SYN event terminator (see
-     * {@link LinuxEventBuffer#put}). The events from this device, therefore,
-     * are never delivered to the JavaFX application. The "gpio-keys" device
-     * driver on more recent systems, though, correctly generates the EV_SYN
-     * event terminator for keypad events.
+     * events, but the {@link LinuxInputDevice#run} method schedules an event
+     * for processing only after receiving the EV_SYN event terminator (see the
+     * {@link LinuxEventBuffer#put} method). The events from this device,
+     * therefore, are never delivered to the JavaFX application. The "gpio-keys"
+     * device driver on more recent systems, though, correctly generates the
+     * EV_SYN event terminator for keypad events.
      *
      * @param device the LinuxInputDevice.
      * @param name the device name, such as <i>/dev/input/event0</i>.

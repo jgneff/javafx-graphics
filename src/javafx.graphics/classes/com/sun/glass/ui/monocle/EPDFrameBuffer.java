@@ -440,7 +440,7 @@ class EPDFrameBuffer {
             logger.severe("Failed waiting for update {2}: {0} ({1})",
                     system.getErrorMessage(), system.errno(), marker);
         } else if (rc == 0 && logger.isLoggable(Level.FINER)) {
-            logger.finer("No wait for update {0}: already completed",
+            logger.finer("Update completed before wait: marker {0}",
                     Integer.toUnsignedLong(marker));
         }
     }
