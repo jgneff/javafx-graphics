@@ -322,8 +322,8 @@ class EPDFrameBuffer {
     private void setTemperature(int temp) {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_TEMPERATURE, temp);
         if (rc != 0) {
-            logger.severe("Failed setting temperature to {0} °C: {1} ({2})",
-                    temp, system.getErrorMessage(), system.errno());
+            logger.severe("Failed setting temperature to {2} °C: {0} ({1})",
+                    system.getErrorMessage(), system.errno(), temp);
         }
     }
 
@@ -348,8 +348,8 @@ class EPDFrameBuffer {
     private void setAutoUpdateMode(int mode) {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_AUTO_UPDATE_MODE, mode);
         if (rc != 0) {
-            logger.severe("Failed setting auto-update mode: {0} ({1})",
-                    system.getErrorMessage(), system.errno());
+            logger.severe("Failed setting auto-update mode to {2}: {0} ({1})",
+                    system.getErrorMessage(), system.errno(), mode);
         }
     }
 
@@ -443,7 +443,7 @@ class EPDFrameBuffer {
         int rc = driver.ioctl(fd, driver.MXCFB_WAIT_FOR_UPDATE_COMPLETE, marker);
         if (rc < 0) {
             logger.severe("Failed waiting for update {2}: {0} ({1})",
-                    system.getErrorMessage(), system.errno(), marker);
+                    system.getErrorMessage(), system.errno(), Integer.toUnsignedLong(marker));
         } else if (rc == 0 && logger.isLoggable(Level.FINER)) {
             logger.finer("Update completed before wait: marker {0}",
                     Integer.toUnsignedLong(marker));
@@ -461,8 +461,8 @@ class EPDFrameBuffer {
     private void setPowerdownDelay(int delay) {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_PWRDOWN_DELAY, delay);
         if (rc != 0) {
-            logger.severe("Failed setting power-down delay to {0}: {1} ({2})",
-                    delay, system.getErrorMessage(), system.errno());
+            logger.severe("Failed setting power-down delay to {2}: {0} ({1})",
+                    system.getErrorMessage(), system.errno(), delay);
         }
     }
 
@@ -494,8 +494,8 @@ class EPDFrameBuffer {
     private void setUpdateScheme(int scheme) {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_UPDATE_SCHEME, scheme);
         if (rc != 0) {
-            logger.severe("Failed setting update scheme to {0}: {1} ({2})",
-                    scheme, system.getErrorMessage(), system.errno());
+            logger.severe("Failed setting update scheme to {2}: {0} ({1})",
+                    system.getErrorMessage(), system.errno(), scheme);
         }
     }
 
