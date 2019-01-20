@@ -25,9 +25,9 @@
 package com.sun.glass.ui.monocle;
 
 /**
- * EPDSettingsShim provides access to the {@link EPDSettings} class for test
- * cases in {@link test.com.sun.glass.ui.monocle.EPDSettingsTest
- * EPDSettingsTest} by making its package-private fields and methods public.
+ * Provides access to the {@link EPDSettings} class by making its
+ * package-private fields and methods public for test cases in
+ * {@link test.com.sun.glass.ui.monocle.EPDSettingsTest EPDSettingsTest}.
  */
 public class EPDSettingsShim {
 
@@ -39,10 +39,10 @@ public class EPDSettingsShim {
     public final int flags;
 
     /**
-     * Obtains a new instance of EPDSettingsShim with the current EPD system
-     * property values.
+     * Obtains a new instance of this class with the current values of the EPD
+     * system properties.
      *
-     * @return the new EPDSettingsShim.
+     * @return a new EPDSettingsShim instance
      */
     public static EPDSettingsShim newInstance() {
         return new EPDSettingsShim(EPDSettings.newInstance());
@@ -52,7 +52,7 @@ public class EPDSettingsShim {
      * Sets the public fields of this object to the corresponding
      * package-private fields of the EPDSettings instance.
      *
-     * @param settings an instance of EPDSettings.
+     * @param settings an instance of EPDSettings
      */
     private EPDSettingsShim(EPDSettings settings) {
         bitsPerPixel = settings.bitsPerPixel;

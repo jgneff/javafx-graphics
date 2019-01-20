@@ -35,13 +35,24 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * EPDFrameBuffer represents the standard Linux frame buffer device interface
- * plus custom extensions to that interface provided by the Electrophoretic
- * Display Controller (EPDC) frame buffer driver.
+ * Represents the standard Linux frame buffer device interface plus the custom
+ * extensions to that interface provided by the Electrophoretic Display
+ * Controller (EPDC) frame buffer driver.
  * <p>
- * <i>The Frame Buffer Device API</i> document in the <i>linux-doc</i>
- * Ubuntu package describes the interface (see
- * <i>/usr/share/doc/linux-doc/fb/api.txt.gz</i>).
+ * The Linux frame buffer device interface is documented in <em>The Frame Buffer
+ * Device API</em> found in the Ubuntu package called <em>linux-doc</em> (see
+ * {@code /usr/share/doc/linux-doc/fb/api.txt.gz}).
+ * <p>
+ * The EPDC frame buffer driver extensions are documented in the <em>i.MX Linux
+ * Reference Manual</em> available on the <a href="https://www.nxp.com/">NXP
+ * website</a> (registration required). On the NXP home page, click Products,
+ * ARM Processors, i.MX Application Processors, and then i.MX 6 Processors, for
+ * example. Select the i.MX6SLL Product in the chart; then click the
+ * Documentation tab. Look for a download with a label for Linux documents, like
+ * {@code L4.1.15_2.1.0_LINUX_DOCS}, under the Supporting Information section.
+ * After downloading and expanding the archive, the reference manual is found in
+ * the <em>doc</em> directory as the file
+ * {@code i.MX_Linux_Reference_Manual.pdf}.
  */
 class EPDFrameBuffer {
 
@@ -79,13 +90,13 @@ class EPDFrameBuffer {
     private int lastMarker;
 
     /**
-     * Creates a new EPDFrameBuffer.
+     * Creates a new EPDFrameBuffer for the given frame buffer device.
      * <p>
      * The geometry of the Linux frame buffer is shown below for various color
-     * depths and rotations on a sample system, as printed by the <i>fbset</i>
+     * depths and rotations on a sample system, as printed by the <em>fbset</em>
      * command. The first set are for landscape mode, while the second set are
      * for portrait.
-     * <pre>
+     * <pre>{@code
      * geometry 800 600 800 640 32 (line length: 3200)
      * geometry 800 600 800 1280 16 (line length: 1600)
      * geometry 800 600 800 1280 8 (line length: 800)
@@ -93,19 +104,19 @@ class EPDFrameBuffer {
      * geometry 600 800 608 896 32 (line length: 2432)
      * geometry 600 800 608 1792 16 (line length: 1216)
      * geometry 600 800 608 1792 8 (line length: 608)
-     * </pre>
-     * <b>Note:</b> MonocleApplication creates a Screen which requires that the
-     * width be set to {@link #xresVirtual} even though only the first
-     * {@link #xres} pixels of each pixel row are visible. The EPDC driver
+     * }</pre>
+     *
+     * @implNote {@code MonocleApplication} creates a {@code Screen} which
+     * requires that the width be set to {@link #xresVirtual} even though only
+     * the first {@link #xres} pixels of each row are visible. The EPDC driver
      * supports panning only in the y-direction, so it is not possible to center
      * the visible resolution horizontally when in portrait mode by moving it
      * four pixels to the right. The JavaFX application should be left-aligned
      * and ignore the extra eight pixels on the right of its screen.
      *
-     * @param fbPath the frame buffer device path, such as
-     * <i>/dev/fb0</i>.
-     * @throws IOException if an error occurs when opening the frame buffer
-     * device or when getting or setting the frame buffer configuration.
+     * @param fbPath the frame buffer device path, such as {@code /dev/fb0}
+     * @throws IOException if an error occurs while opening the frame buffer
+     * device or when getting or setting the frame buffer configuration
      */
     EPDFrameBuffer(String fbPath) throws IOException {
         settings = EPDSettings.newInstance();
@@ -179,7 +190,7 @@ class EPDFrameBuffer {
 
         /*
          * Allocates objects for reuse to avoid creating their direct byte
-         * buffers outside of the Java heap for each display update.
+         * buffers outside of the Java heap on each display update.
          */
         updateData = new MxcfbUpdateData();
         syncUpdate = createDefaultUpdate(xres, yres);
@@ -187,11 +198,10 @@ class EPDFrameBuffer {
 
     /**
      * Gets the variable screen information of the frame buffer. Run the
-     * <i>fbset</i> command as <i>root</i> to print the screen information.
+     * <em>fbset</em> command as <em>root</em> to print the screen information.
      *
      * @param screen the object representing the variable screen information
-     * structure.
-     * @throws IOException if an error occurs getting the information.
+     * @throws IOException if an error occurs getting the information
      */
     private void getScreenInfo(FbVarScreenInfo screen) throws IOException {
         int rc = system.ioctl(fd, LinuxSystem.FBIOGET_VSCREENINFO, screen.p);
@@ -204,21 +214,19 @@ class EPDFrameBuffer {
     /**
      * Sets the variable screen information of the frame buffer.
      * <p>
-     * <b>Notes:</b>
-     * <p>
      * "To ensure that the EPDC driver receives the initialization request, the
-     * activate field of the fb_var_screeninfo parameter should be set to
-     * FB_ACTIVATE_FORCE." [EPDC Panel Initialization, <i>i.MX Linux Reference
-     * Manual</i>]
+     * {@code activate} field of the {@code fb_var_screeninfo} parameter should
+     * be set to {@code FB_ACTIVATE_FORCE}." [EPDC Panel Initialization,
+     * <em>i.MX Linux Reference Manual</em>]
      * <p>
      * To request a change to 8-bit grayscale format, the bits per pixel must be
      * set to 8 and the grayscale value must be set to one of the two valid
-     * grayscale format values: GRAYSCALE_8BIT or GRAYSCALE_8BIT_INVERTED.
-     * [Grayscale Framebuffer Selection, <i>i.MX Linux Reference Manual</i>]
+     * grayscale format values: {@code GRAYSCALE_8BIT} or
+     * {@code GRAYSCALE_8BIT_INVERTED}. [Grayscale Framebuffer Selection,
+     * <em>i.MX Linux Reference Manual</em>]
      *
      * @param screen the object representing the variable screen information
-     * structure.
-     * @throws IOException if an error occurs setting the information.
+     * @throws IOException if an error occurs setting the information
      */
     private void setScreenInfo(FbVarScreenInfo screen) throws IOException {
         int rc = system.ioctl(fd, LinuxSystem.FBIOPUT_VSCREENINFO, screen.p);
@@ -233,7 +241,6 @@ class EPDFrameBuffer {
      * the logging level.
      *
      * @param screen the object representing the variable screen information
-     * structure.
      */
     private void logScreenInfo(FbVarScreenInfo screen) {
         if (logger.isLoggable(Level.FINE)) {
@@ -252,18 +259,17 @@ class EPDFrameBuffer {
 
     /**
      * Creates the default update data with values from the EPD system
-     * properties, setting all fields except for the update marker. Reusing this
-     * object avoids creating a new MxcfbUpdateData for each update request.
-     * <p>
-     * <b>Note:</b> An update mode of {@link EPDSystem#UPDATE_MODE_FULL} would
-     * make the {@link EPDSettings#NO_WAIT} system property useless by changing
-     * all non-colliding updates into colliding ones, so this method sets the
+     * properties, setting all fields except for the update marker. Reusing the
+     * update data object avoids creating a new one for each update request.
+     *
+     * @implNote An update mode of {@link EPDSystem#UPDATE_MODE_FULL} would make
+     * the {@link EPDSettings#NO_WAIT} system property useless by changing all
+     * non-colliding updates into colliding ones, so this method sets the
      * default update mode to {@link EPDSystem#UPDATE_MODE_PARTIAL}.
      *
-     * @param width the width of the update region.
-     * @param height the height of the update region.
-     * @return the default update data, with all fields but the update marker
-     * defined.
+     * @param width the width of the update region
+     * @param height the height of the update region
+     * @return the default update data with all fields set but the update marker
      */
     private MxcfbUpdateData createDefaultUpdate(int width, int height) {
         var update = new MxcfbUpdateData();
@@ -276,25 +282,24 @@ class EPDFrameBuffer {
     }
 
     /**
-     * Defines a mapping for common waveform modes. These values must be
-     * configured for automatic waveform mode selection to function properly.
-     * Each of the parameters should be set to one of the following waveform
-     * modes:
+     * Defines a mapping for common waveform modes. This mapping must be
+     * configured for the automatic waveform mode selection to function
+     * properly. Each of the parameters should be set to one of the following:
      * <ul>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_INIT},</li>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_DU},</li>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_GC16},</li>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_GC4}, or</li>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_A2}.</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_INIT}</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_DU}</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_GC16}</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_GC4}</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_A2}</li>
      * </ul>
      *
-     * @param init the initialization mode for clearing the screen to all white.
+     * @param init the initialization mode for clearing the screen to all white
      * @param du the direct update mode for changing any gray values to either
-     * black or white.
-     * @param gc4 the mode for 4-level (2-bit) grayscale images and text.
-     * @param gc8 the mode for 8-level (3-bit) grayscale images and text.
-     * @param gc16 the mode for 16-level (4-bit) grayscale images and text.
-     * @param gc32 the mode for 32-level (5-bit) grayscale images and text.
+     * all black or all white
+     * @param gc4 the mode for 4-level (2-bit) grayscale images and text
+     * @param gc8 the mode for 8-level (3-bit) grayscale images and text
+     * @param gc16 the mode for 16-level (4-bit) grayscale images and text
+     * @param gc32 the mode for 32-level (5-bit) grayscale images and text
      */
     private void setWaveformModes(int init, int du, int gc4, int gc8, int gc16, int gc32) {
         var modes = new MxcfbWaveformModes();
@@ -312,13 +317,13 @@ class EPDFrameBuffer {
      * the temperature in a specific update to anything other than
      * {@link EPDSystem#TEMP_USE_AMBIENT}.
      *
-     * @param temp the temperature value in degrees Celsius.
+     * @param temp the temperature in degrees Celsius
      */
     private void setTemperature(int temp) {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_TEMPERATURE, temp);
         if (rc != 0) {
-            logger.severe("Failed setting temperature: {0} ({1})",
-                    system.getErrorMessage(), system.errno());
+            logger.severe("Failed setting temperature to {0} °C: {1} ({2})",
+                    temp, system.getErrorMessage(), system.errno());
         }
     }
 
@@ -330,14 +335,14 @@ class EPDFrameBuffer {
      * memory region have been modified.
      * <p>
      * Automatic mode is available only when it has been enabled in the Linux
-     * kernel by the CONFIG_FB_MXC_EINK_AUTO_UPDATE_MODE option. You can find
-     * the configuration options used to build your kernel in a file under
-     * <i>/proc</i> or <i>/boot</i>, such as <i>/proc/config.gz</i>.
+     * kernel by the {@code CONFIG_FB_MXC_EINK_AUTO_UPDATE_MODE} option. You can
+     * find the configuration options used to build the kernel in a file under
+     * {@code /proc} or {@code /boot}, such as {@code /proc/config.gz}.
      *
-     * @param mode the automatic update mode, either:
+     * @param mode the automatic update mode as one of the following:
      * <ul>
-     * <li>{@link EPDSystem#AUTO_UPDATE_MODE_AUTOMATIC_MODE} or</li>
-     * <li>{@link EPDSystem#AUTO_UPDATE_MODE_REGION_MODE}.</li>
+     * <li>{@link EPDSystem#AUTO_UPDATE_MODE_AUTOMATIC_MODE}</li>
+     * <li>{@link EPDSystem#AUTO_UPDATE_MODE_REGION_MODE}</li>
      * </ul>
      */
     private void setAutoUpdateMode(int mode) {
@@ -352,28 +357,28 @@ class EPDFrameBuffer {
      * Requests the entire visible region of the frame buffer to be updated to
      * the display.
      *
-     * @param updateMode the update mode, either:
+     * @param updateMode the update mode, one of:
      * <ul>
-     * <li>{@link EPDSystem#UPDATE_MODE_FULL} or</li>
-     * <li>{@link EPDSystem#UPDATE_MODE_PARTIAL}.</li>
+     * <li>{@link EPDSystem#UPDATE_MODE_FULL}</li>
+     * <li>{@link EPDSystem#UPDATE_MODE_PARTIAL}</li>
      * </ul>
      * @param waveformMode the waveform mode, one of:
      * <ul>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_INIT},</li>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_DU},</li>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_GC16},</li>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_GC4}, or</li>
-     * <li>{@link EPDSystem#WAVEFORM_MODE_A2}.</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_INIT}</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_DU}</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_GC16}</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_GC4}</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_A2}</li>
      * </ul>
-     * @param flags a bit mask composed from the flag values:
+     * @param flags a bit mask composed of the following flag values:
      * <ul>
-     * <li>{@link EPDSystem#EPDC_FLAG_ENABLE_INVERSION},</li>
-     * <li>{@link EPDSystem#EPDC_FLAG_FORCE_MONOCHROME},</li>
-     * <li>{@link EPDSystem#EPDC_FLAG_USE_DITHERING_Y1}, and</li>
-     * <li>{@link EPDSystem#EPDC_FLAG_USE_DITHERING_Y4}.</li>
+     * <li>{@link EPDSystem#EPDC_FLAG_ENABLE_INVERSION}</li>
+     * <li>{@link EPDSystem#EPDC_FLAG_FORCE_MONOCHROME}</li>
+     * <li>{@link EPDSystem#EPDC_FLAG_USE_DITHERING_Y1}</li>
+     * <li>{@link EPDSystem#EPDC_FLAG_USE_DITHERING_Y4}</li>
      * </ul>
-     * @return the marker value to identify this update in a subsequence call to
-     * {@link #waitForUpdateComplete}.
+     * @return the marker to identify this update in a subsequence call to
+     * {@link #waitForUpdateComplete}
      */
     private int sendUpdate(int updateMode, int waveformMode, int flags) {
         updateData.setUpdateRegion(updateData.p, 0, 0, xres, yres);
@@ -388,13 +393,13 @@ class EPDFrameBuffer {
      * data object. The waveform mode is reset because the update data could
      * have been used in a previous update. In that case, the waveform mode may
      * have been modified by the EPDC driver with the actual mode selected. The
-     * update marker field is overwritten with the next sequential marker value.
+     * update marker is overwritten with the next sequential marker.
      *
-     * @param update the data describing the update. The waveform mode and
-     * update marker will be overwritten.
-     * @param waveformMode the waveform mode for this update.
-     * @return the marker value to identify this update in a subsequence call to
-     * {@link #waitForUpdateComplete}.
+     * @param update the data describing the update; the waveform mode and
+     * update marker are overwritten
+     * @param waveformMode the waveform mode for this update
+     * @return the marker to identify this update in a subsequence call to
+     * {@link #waitForUpdateComplete}
      */
     private int sendUpdate(MxcfbUpdateData update, int waveformMode) {
         /*
@@ -424,15 +429,15 @@ class EPDFrameBuffer {
     /**
      * Blocks and waits for a previous update request to complete.
      *
-     * @param marker the marker value used to identify a particular update,
-     * returned by {@linkplain #sendUpdate(MxcfbUpdateData, int) sendUpdate}.
+     * @param marker the marker to identify a particular update, returned by
+     * {@linkplain #sendUpdate(MxcfbUpdateData, int) sendUpdate}
      */
     private void waitForUpdateComplete(int marker) {
         /*
-         * This IOCTL call returns: 0 if the marker is not found because the
-         * update already completed or failed, -1 with the error "Connection
-         * timed out (110)" if the wait times out after 5 seconds, or a positive
-         * value from the Linux kernel if a wait occurrs and completes (see
+         * This IOCTL call returns: 0 if the marker was not found because the
+         * update already completed or failed, negative (-1) with the error
+         * "Connection timed out (110)" if the wait timed out after 5 seconds,
+         * or positive if the wait occurred and completed (see
          * "wait_for_completion_timeout" in "kernel/sched/completion.c").
          */
         int rc = driver.ioctl(fd, driver.MXCFB_WAIT_FOR_UPDATE_COMPLETE, marker);
@@ -451,20 +456,20 @@ class EPDFrameBuffer {
      * disable powering down entirely, use the delay value
      * {@link EPDSystem#FB_POWERDOWN_DISABLE}.
      *
-     * @param delay the delay value in milliseconds.
+     * @param delay the delay in milliseconds
      */
     private void setPowerdownDelay(int delay) {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_PWRDOWN_DELAY, delay);
         if (rc != 0) {
-            logger.severe("Failed setting power-down delay: {0} ({1})",
-                    system.getErrorMessage(), system.errno());
+            logger.severe("Failed setting power-down delay to {0}: {1} ({2})",
+                    delay, system.getErrorMessage(), system.errno());
         }
     }
 
     /**
-     * Gets the current power-down delay value from the EPDC driver.
+     * Gets the current power-down delay from the EPDC driver.
      *
-     * @return the delay value in milliseconds.
+     * @return the delay in milliseconds
      */
     private int getPowerdownDelay() {
         var integer = new IntStructure();
@@ -481,57 +486,38 @@ class EPDFrameBuffer {
      *
      * @param scheme the update scheme, one of:
      * <ul>
-     * <li>{@link EPDSystem#UPDATE_SCHEME_SNAPSHOT},</li>
-     * <li>{@link EPDSystem#UPDATE_SCHEME_QUEUE}, or</li>
-     * <li>{@link EPDSystem#UPDATE_SCHEME_QUEUE_AND_MERGE}.</li>
+     * <li>{@link EPDSystem#UPDATE_SCHEME_SNAPSHOT}</li>
+     * <li>{@link EPDSystem#UPDATE_SCHEME_QUEUE}</li>
+     * <li>{@link EPDSystem#UPDATE_SCHEME_QUEUE_AND_MERGE}</li>
      * </ul>
      */
     private void setUpdateScheme(int scheme) {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_UPDATE_SCHEME, scheme);
         if (rc != 0) {
-            logger.severe("Failed setting update scheme: {0} ({1})",
-                    system.getErrorMessage(), system.errno());
+            logger.severe("Failed setting update scheme to {0}: {1} ({2})",
+                    scheme, system.getErrorMessage(), system.errno());
         }
     }
 
     /**
      * Initializes the EPDC frame buffer device, setting the update scheme to
      * {@link EPDSystem#UPDATE_SCHEME_SNAPSHOT}.
+     *
+     * @implNote In the following notes, <em>synchronization</em> means waiting
+     * for the previous update to complete before sending the next update.
      * <p>
-     * <b>Notes:</b> In the following notes, <i>synchronization</i> means
-     * waiting for the previous update to complete before sending the next
-     * update.
+     * Regarding the update scheme, only the Snapshot scheme can be used with or
+     * without synchronization while avoiding problems with either the frame
+     * rate or the integrity of the frames displayed on screen.
      * <p>
-     * Regarding the update scheme, there are really just two alternatives:
-     * Snapshot or Queue. The third scheme, Queue and Merge, without
-     * synchronization will combine separate colliding frames, and with
-     * synchronization is the same as the Queue scheme.
-     * <p>
-     * The Snapshot scheme allows for writing the next update to the frame
-     * buffer while the EPDC driver is busy displaying the previous update. With
-     * this scheme, a 32-bit frame buffer can even be used directly as the
-     * composition buffer, avoiding a copying step for each frame. With the
-     * Queue scheme, on the other hand, the composition buffer must be
-     * off-screen and copied to the frame buffer only after the previous update
-     * completes. The three alternatives are summarized below.
-     * <p>
-     * Without synchronization, when update collisions occur:
-     * <ul>
-     * <li>The Queue scheme drops frames.</li>
-     * <li>The Queue and Merge scheme combines frames.</li>
-     * <li>The Snapshot scheme may run out of the driver's internal buffers,
-     * depending on the rate of collisions.</li>
-     * </ul>
-     * With synchronization, in which collisions cannot occur:
-     * <ul>
-     * <li>The Queue scheme must copy frames from an off-screen composition
-     * buffer.</li>
-     * <li>The Queue and Merge scheme is the same as the Queue scheme.</li>
-     * <li>The Snapshot scheme can use a 32-bit Linux frame buffer directly for
-     * composition.</li>
-     * </ul>
-     * Only the Snapshot scheme can be used in both cases without problems for
-     * either the performance or the frames displayed on screen.
+     * Without synchronization, if update collisions occur, the Queue scheme
+     * drops frames, the Queue and Merge scheme combines frames, and the
+     * Snapshot scheme can reorder frames or even run out of internal buffers,
+     * depending on the frame and collision rates. With synchronization, where
+     * update collisions cannot occur, the Queue and Merge scheme is the same as
+     * the Queue scheme, the Queue scheme must copy each frame from an
+     * off-screen composition buffer, but the Snapshot scheme can use a 32-bit
+     * Linux frame buffer directly, avoiding the extra copying step.
      */
     void init() {
         setWaveformModes(EPDSystem.WAVEFORM_MODE_INIT, EPDSystem.WAVEFORM_MODE_DU,
@@ -544,10 +530,10 @@ class EPDFrameBuffer {
     }
 
     /**
-     * Clears the display panel. This method assumes that the visible frame
-     * buffer is filled with zeros (black) when called. It sends two direct
-     * updates, all black followed by all white, to refresh the screen and clear
-     * ghosting effects, and returns when both updates are completed.
+     * Clears the display panel. The visible frame buffer should be cleared with
+     * zeros when called. This method sends two direct updates, all black
+     * followed by all white, to refresh the screen and clear any ghosting
+     * effects, and returns when both updates are complete.
      */
     void clear() {
         lastMarker = sendUpdate(EPDSystem.UPDATE_MODE_FULL,
@@ -573,7 +559,7 @@ class EPDFrameBuffer {
      * Gets the number of bytes from the beginning of the frame buffer to the
      * start of its visible resolution.
      *
-     * @return the offset in bytes.
+     * @return the offset in bytes
      */
     int getByteOffset() {
         return byteOffset;
@@ -581,10 +567,9 @@ class EPDFrameBuffer {
 
     /**
      * Creates an off-screen byte buffer equal in resolution to the virtual
-     * resolution of the frame buffer but with 32 bits per pixel.
+     * resolution of the frame buffer, but with 32 bits per pixel.
      *
-     * @return a 32-bit pixel buffer matching the resolution of the frame
-     * buffer.
+     * @return a 32-bit pixel buffer matching the resolution of the frame buffer
      */
     ByteBuffer getOffscreenBuffer() {
         /*
@@ -600,7 +585,7 @@ class EPDFrameBuffer {
      * Creates a new mapping of the Linux frame buffer device into memory.
      *
      * @return a byte buffer containing the mapping of the Linux frame buffer
-     * device.
+     * device
      */
     ByteBuffer getMappedBuffer() {
         int size = xresVirtual * yresVirtual * bytesPerPixel;
@@ -612,7 +597,7 @@ class EPDFrameBuffer {
      * Deletes the mapping of the Linux frame buffer device.
      *
      * @param buffer the byte buffer containing the mapping of the Linux frame
-     * buffer device.
+     * buffer device
      */
     void releaseMappedBuffer(ByteBuffer buffer) {
         system.munmap(C.getC().GetDirectBufferAddress(buffer), buffer.capacity());
@@ -628,17 +613,17 @@ class EPDFrameBuffer {
     /**
      * Gets the native handle to the Linux frame buffer device.
      *
-     * @return the frame buffer device file descriptor.
+     * @return the frame buffer device file descriptor
      */
     long getNativeHandle() {
         return fd;
     }
 
     /**
-     * Gets the virtual horizontal resolution of the frame buffer. See the note
+     * Gets the virtual horizontal resolution of the frame buffer. See the notes
      * for the {@linkplain EPDFrameBuffer#EPDFrameBuffer constructor} above.
      *
-     * @return the virtual width in pixels.
+     * @return the virtual width in pixels
      */
     int getWidth() {
         return xresVirtual;
@@ -647,16 +632,16 @@ class EPDFrameBuffer {
     /**
      * Gets the visible vertical resolution of the frame buffer.
      *
-     * @return the visible height in pixels.
+     * @return the visible height in pixels
      */
     int getHeight() {
         return yres;
     }
 
     /**
-     * Gets the color depth of the frame buffer in bits per pixel.
+     * Gets the color depth of the frame buffer.
      *
-     * @return the color depth in bits per pixel.
+     * @return the color depth in bits per pixel
      */
     int getBitDepth() {
         return bitsPerPixel;

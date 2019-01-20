@@ -29,22 +29,23 @@ import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 
 /**
- * FramebufferY8Shim provides access to the {@link FramebufferY8} class for test
- * cases in {@link test.com.sun.glass.ui.monocle.FramebufferY8Test
- * FramebufferY8Test} by making its package-private methods public.
+ * Provides access to the {@link FramebufferY8} class by making its
+ * package-private methods public for test cases in
+ * {@link test.com.sun.glass.ui.monocle.FramebufferY8Test FramebufferY8Test}.
  */
 public class FramebufferY8Shim extends FramebufferY8 {
 
     /**
      * Creates a new FramebufferY8Shim.
      *
-     * @param bb the 32-bit ARGB32 composition buffer.
-     * @param width the width of the buffer in pixels.
-     * @param height the height of the buffer in pixels.
-     * @param depth the color depth of the target, in bits per pixel.
-     * @param clear <code>true</code> to clear the buffer on the first upload of
-     * each frame unless that upload already overwrites the entire buffer;
-     * otherwise <code>false</code>.
+     * @param bb the 32-bit composition buffer
+     * @param width the width of the buffer in pixels
+     * @param height the height of the buffer in pixels
+     * @param depth the color depth of the target channel or buffer, in bits per
+     * pixel
+     * @param clear {@code true} to clear the buffer on the first upload of each
+     * frame unless that upload already overwrites the entire buffer; otherwise
+     * {@code false}
      */
     public FramebufferY8Shim(ByteBuffer bb, int width, int height, int depth, boolean clear) {
         super(bb, width, height, depth, clear);

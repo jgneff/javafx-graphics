@@ -40,11 +40,11 @@ import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 
 /**
- * EPDScreen is the native screen implementation for an electrophoretic display,
- * also called an e-paper display. This class uploads pixels directly into the
- * Linux frame buffer if it has a color depth of 32 bits per pixel. Otherwise,
- * this class uploads the pixels into an off-screen composition buffer and then
- * writes them to the Linux frame buffer.
+ * A native screen for an electrophoretic display, also called an e-paper
+ * display. This class uploads pixels directly into the Linux frame buffer if it
+ * is configured with a color depth of 32 bits per pixel. Otherwise, this class
+ * uploads pixels into a 32-bit off-screen composition buffer and converts the
+ * pixels to the correct format when writing them to the Linux frame buffer.
  */
 class EPDScreen implements NativeScreen {
 
@@ -59,15 +59,15 @@ class EPDScreen implements NativeScreen {
     private static final String FB_PATH_DEFAULT = "/dev/fb0";
 
     /**
-     * The density of the screen in pixels per inch. For now, this value is
-     * hard-coded to the density of a 6-inch display with 800 × 600 px at 167
-     * ppi.
+     * The density of this screen in pixels per inch. For now, the value is
+     * hard-coded to the density of a 6-inch display panel with 800 × 600 px at
+     * 167 ppi.
      */
     private static final int DPI = 167;
 
     /**
-     * The ratio of physical pixels to logical pixels for the screen. For now,
-     * this value is hard-coded to a ratio of 1.0.
+     * The ratio of physical pixels to logical pixels on this screen. For now,
+     * the value is hard-coded to a ratio of 1.0.
      */
     private static final float SCALE = 1.0f;
 
@@ -99,13 +99,13 @@ class EPDScreen implements NativeScreen {
             bitDepth = fbDevice.getBitDepth();
 
             /*
-             * If the Linux frame buffer has 32-bit pixels in ARGB32 format,
-             * compose the pixels directly into it. Otherwise, compose the
-             * pixels into an off-screen buffer and write them to the frame
-             * buffer file channel.
+             * If the Linux frame buffer is configured for 32-bit color, compose
+             * the pixels directly into it. Otherwise, compose the pixels into
+             * an off-screen buffer and write them to the frame buffer when
+             * swapping buffers.
              *
              * With an LCD display, there must be space for two full screens to
-             * be able to render directly into the frame buffer, displaying one
+             * be able to write directly into the frame buffer, displaying one
              * while updating the other. The Snapshot update mode of an e-paper
              * display, though, allows us to reuse the same frame buffer region
              * immediately after sending an update.
@@ -169,7 +169,7 @@ class EPDScreen implements NativeScreen {
     }
 
     /**
-     * Clears the screen. Called only during initialization and shutdown.
+     * Clears the screen.
      */
     private void clearScreen() {
         pixels.clearBufferContents();
@@ -216,7 +216,6 @@ class EPDScreen implements NativeScreen {
 
     @Override
     public synchronized void shutdown() {
-        clearScreen();
         close();
         isShutdown = true;
     }

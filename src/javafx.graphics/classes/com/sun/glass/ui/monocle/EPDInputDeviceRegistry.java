@@ -30,38 +30,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * EPDInputDeviceRegistry maintains an observable set of input devices for the
- * keypad buttons and touch screen on the system. It is responsible for
- * detecting the attached input devices and generating input events from these
- * devices.
+ * Maintains an observable set of input devices. This class is responsible for
+ * detecting the attached input devices and generating their input events.
  * <p>
- * Run the following commands as <i>root</i> to list the properties of the
- * keypad (event0) and touch screen (event1) input devices:
- * <pre>
+ * Run the following commands as <em>root</em> to list the properties of the
+ * keypad (event0) and touch screen (event1) input devices on the system:
+ * <pre>{@code
  * # udevadm info -q all -n /dev/input/event0
  * # udevadm info -q all -n /dev/input/event1
- * </pre>
- * <b>Notes:</b>
+ * }</pre>
+ *
+ * @implNote {@code EPDPlatform} creates an instance of this subclass instead of
+ * a {@code LinuxInputDeviceRegistry} because this class overrides two of its
+ * methods.
  * <p>
- * EPDPlatform creates an instance of this class instead of creating a
- * LinuxInputDeviceRegistry because this class needs to override the following
- * methods:
- * <dl>
- * <dt>{@link #createDevice}</dt>
- * <dd>to work around bug JDK-8201568 by opening the device before creating its
- * LinuxInputDevice.</dd>
- * <dt>{@link #addDeviceInternal}</dt>
- * <dd>to work around older versions of <i>udev</i>, such as version 142, which
- * do not return the property ID_INPUT_TOUCHSCREEN=1 for the touch screen
- * device. That property and value is required by the
- * {@link LinuxInputDevice#isTouch} method to detect a touch screen device.
- * Otherwise, the method returns <code>false</code> and the touch screen is
- * mistakenly given a keyboard input processor. Newer versions of <i>udev</i>,
- * such as version 204, correctly return this property.</dd>
- * </dl>
- * Therefore, once JDK-8201568 is fixed and the old version of <i>udev</i> is no
- * longer in use, this entire class can be removed and replaced by
- * LinuxInputDeviceRegistry.
+ * It overrides {@link #createDevice} to work around bug JDK-8201568 by opening
+ * the device before creating its {@code LinuxInputDevice}.
+ * <p>
+ * It overrides {@link #addDeviceInternal} to work around older versions of
+ * <em>udev</em>, such as version 142, which do not provide the property
+ * {@code ID_INPUT_TOUCHSCREEN=1} for the touch screen device.
+ * {@link LinuxInputDevice#isTouch} requires that property and value; otherwise
+ * the method returns {@code false}, and the touch screen is mistakenly assigned
+ * a keyboard input processor. Newer versions of <em>udev</em>, such as version
+ * 204, provide the correct property and value.
+ * <p>
+ * Therefore, once JDK-8201568 is fixed and the old version of <em>udev</em> is
+ * no longer in use, this entire class can be removed and replaced by its
+ * superclass.
  */
 class EPDInputDeviceRegistry extends InputDeviceRegistry {
 
@@ -76,13 +72,13 @@ class EPDInputDeviceRegistry extends InputDeviceRegistry {
     private static final String TOUCH_FILENAME = "event1";
 
     /**
-     * Creates an observable set of input devices.
-     * <p>
-     * <b>Note:</b> This is a verbatim copy of the LinuxInputDeviceRegistry
+     * Creates a new observable set of input devices.
+     *
+     * @implNote This is a verbatim copy of the {@code LinuxInputDeviceRegistry}
      * constructor.
      *
-     * @param headless <code>true</code> if this environment cannot support a
-     * display, keyboard, and mouse; otherwise <code>false</code>.
+     * @param headless {@code true} if this environment cannot support a
+     * display, keyboard, and mouse; otherwise {@code false}
      */
     EPDInputDeviceRegistry(boolean headless) {
         if (headless) {
@@ -125,22 +121,22 @@ class EPDInputDeviceRegistry extends InputDeviceRegistry {
     }
 
     /**
-     * Creates an input device.
-     * <p>
-     * <b>Note:</b> This method works around bug
+     * Creates a Linux input device with the given properties.
+     *
+     * @implNote Works around bug
      * <a href="https://bugs.openjdk.java.net/browse/JDK-8201568">JDK-8201568</a>,
      * "zForce touchscreen input device fails when closed and immediately
-     * reopened." It avoids the problem by opening the device before creating
-     * its LinuxInputDevice.
+     * reopened," by opening the device before creating its
+     * {@code LinuxInputDevice}.
      *
      * @param devNode the file representing the device name, such as
-     * <i>/dev/input/event1</i>.
+     * {@code /dev/input/event1}
      * @param sysPath the system path to the device, such as
-     * <i>/sys/devices/virtual/input/input1/event1</i>.
-     * @param udevManifest the set of properties for the device.
-     * @return the new LinuxInputDevice, or <code>null</code> if no processor is
-     * found for the device.
-     * @throws IOException if an error occurs opening the device.
+     * {@code/sys/devices/virtual/input/input1/event1}
+     * @param udevManifest the set of properties for the device
+     * @return the new Linux input device, or {@code null} if no processor is
+     * found for the device
+     * @throws IOException if an error occurs opening the device
      */
     private LinuxInputDevice createDevice(File devNode, File sysPath,
             Map<String, String> udevManifest) throws IOException {
@@ -153,24 +149,26 @@ class EPDInputDeviceRegistry extends InputDeviceRegistry {
 
     /**
      * Creates an input processor for the device. Run the following commands as
-     * <i>root</i> to display the events generated by the keypad (0) and touch
+     * <em>root</em> to display the events generated by the keypad (0) and touch
      * screen (1) input devices when you press buttons or touch the screen:
-     * <pre>
+     * <pre>{@code
      * # input-events 0
      * # input-events 1
-     * </pre>
-     * <b>Note:</b> The "mxckpd" keypad device driver does not generate EV_SYN
-     * events, but the {@link LinuxInputDevice#run} method schedules an event
-     * for processing only after receiving the EV_SYN event terminator (see the
-     * {@link LinuxEventBuffer#put} method). The events from this device,
-     * therefore, are never delivered to the JavaFX application. The "gpio-keys"
-     * device driver on more recent systems, though, correctly generates the
-     * EV_SYN event terminator for keypad events.
+     * }</pre>
      *
-     * @param device the LinuxInputDevice.
-     * @param name the device name, such as <i>/dev/input/event0</i>.
-     * @return the LinuxInputDevice, or <code>null</code> if no input processor
-     * is found for the device.
+     * @implNote The "mxckpd" keypad device driver does not generate
+     * {@code EV_SYN} events, yet the {@link LinuxInputDevice#run} method
+     * schedules an event for processing only after receiving the {@code EV_SYN}
+     * event terminator (see the {@link LinuxEventBuffer#put} method). The
+     * events from this device, therefore, are never delivered to the JavaFX
+     * application. The "gpio-keys" device driver on more recent systems,
+     * though, correctly generates the {@code EV_SYN} event terminator for
+     * keypad events.
+     *
+     * @param device the Linux input device
+     * @param name the device name, such as {@code /dev/input/event0}
+     * @return the Linux input device, or {@code null} if no input processor is
+     * found for the device
      */
     private LinuxInputDevice addDeviceInternal(LinuxInputDevice device, String name) {
         LinuxInputProcessor processor = null;

@@ -24,7 +24,7 @@
  */
 package test.com.sun.glass.ui.monocle;
 
-import com.sun.glass.ui.monocle.FramebufferY8ParentShim;
+import com.sun.glass.ui.monocle.FramebufferY8SuperShim;
 import com.sun.glass.ui.monocle.FramebufferY8Shim;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -40,14 +40,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * FramebufferY8Test tests the FramebufferY8 class.
+ * Provides test cases for the FramebufferY8 class.
  */
 public class FramebufferY8Test {
 
     /**
      * An image with all 16,777,216 colors of the 24-bit RGB palette in a 4096 ×
-     * 4096 bitmap. The file was created by <i>Naruto_64</i> and published under
-     * the Creative Commons "CC BY-SA 4.0" license. For details, see the
+     * 4096 bitmap. The file was created by <em>Naruto_64</em> and published
+     * under the Creative Commons "CC BY-SA 4.0" license. For details, see the
      * Wikimedia Commons page at
      * <a href="https://commons.wikimedia.org/wiki/File:16777216colors_diffpatt.png">
      * File:16777216colors diffpatt.png</a>.
@@ -64,7 +64,7 @@ public class FramebufferY8Test {
      * cases. It loads the image into the buffer as 32-bit pixels in ARGB32
      * format.
      *
-     * @throws IOException if an error occurs loading the image.
+     * @throws IOException if an error occurs loading the image
      */
     @BeforeClass
     public static void onlyOnce() throws IOException {
@@ -84,14 +84,14 @@ public class FramebufferY8Test {
     }
 
     /**
-     * Tests the copyToBuffer method of FramebufferY8 by comparing its output to
-     * that of the original implementation in its parent class.
+     * Tests the copyToBuffer method of the FramebufferY8 class by comparing its
+     * output to that of the original implementation in its superclass.
      *
-     * @param bitsPerPixel the number of bits per pixel in the output buffer.
-     * @param bytesPerPixel the number of bytes per pixel in the output buffer.
+     * @param bitsPerPixel the number of bits per pixel in the output buffer
+     * @param bytesPerPixel the number of bytes per pixel in the output buffer
      */
     private void copyTest(int bitsPerPixel, int bytesPerPixel) {
-        var oldSource = new FramebufferY8ParentShim(bb, width, height, bitsPerPixel, true);
+        var oldSource = new FramebufferY8SuperShim(bb, width, height, bitsPerPixel, true);
         var oldTarget = ByteBuffer.allocate(width * height * bytesPerPixel);
         oldSource.copyToBuffer(oldTarget);
         oldTarget.flip();
@@ -109,15 +109,15 @@ public class FramebufferY8Test {
     }
 
     /**
-     * Tests the write method of FramebufferY8 by comparing its output to that
-     * of the original implementation in its parent class.
+     * Tests the write method of the FramebufferY8 class by comparing its output
+     * to that of the original implementation in its superclass.
      *
-     * @param bitsPerPixel the number of bits per pixel in the output buffer.
-     * @param bytesPerPixel the number of bytes per pixel in the output buffer.
-     * @throws IOException if an error occurs writing to an output channel.
+     * @param bitsPerPixel the number of bits per pixel in the output buffer
+     * @param bytesPerPixel the number of bytes per pixel in the output buffer
+     * @throws IOException if an error occurs writing to an output channel
      */
     private void writeTest(int bitsPerPixel, int bytesPerPixel) throws IOException {
-        var oldSource = new FramebufferY8ParentShim(bb, width, height, bitsPerPixel, true);
+        var oldSource = new FramebufferY8SuperShim(bb, width, height, bitsPerPixel, true);
         var oldTarget = new ByteArrayOutputStream(width * height * bytesPerPixel);
         try (var oldChannel = Channels.newChannel(oldTarget)) {
             oldSource.write(oldChannel);

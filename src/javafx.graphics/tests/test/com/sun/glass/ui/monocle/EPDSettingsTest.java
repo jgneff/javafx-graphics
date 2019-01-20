@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Tests the EPDSettings class.
+ * Provides test cases for the EPDSettings class.
  */
 public class EPDSettingsTest {
 
@@ -64,8 +64,7 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for the frame buffer color depth in
-     * bits per pixel.
+     * Tests setting the EPD system property for the frame buffer color depth.
      */
     @Test
     public void testBitsPerPixel() {
@@ -154,7 +153,7 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for the waveform mode in updates.
+     * Tests setting the EPD system property for the update waveform mode.
      */
     @Test
     public void testWaveformMode() {

@@ -33,20 +33,19 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 /**
- * EPDPlatformFactory is used to create the native platform for a Linux system
- * with an electrophoretic display, also called an e-paper display. These
- * displays are found on e-readers, such as the Amazon Kindle and Rakuten Kobo,
- * and are driven by NXP (formerly Freescale) processors.
+ * A factory object for creating the native platform on a Linux system with an
+ * electrophoretic display, also called an e-paper display. These types of
+ * displays are found on e-readers, such as the Amazon Kindle and Rakuten Kobo.
  */
 class EPDPlatformFactory extends NativePlatformFactory {
 
     /**
-     * The major version number of this NativePlatformFactory.
+     * The major version number of this platform factory.
      */
     private static final int MAJOR_VERSION = 1;
 
     /**
-     * The minor version number of this NativePlatformFactory.
+     * The minor version number of this platform factory.
      */
     private static final int MINOR_VERSION = 0;
 
@@ -63,6 +62,12 @@ class EPDPlatformFactory extends NativePlatformFactory {
     private static final String FB_NAME = "mxc_epdc_fb";
 
     private final PlatformLogger logger = Logging.getJavaFXLogger();
+
+    /**
+     * Creates a new factory object for the Monocle EPD Platform.
+     */
+    EPDPlatformFactory() {
+    }
 
     @Override
     protected boolean matches() {

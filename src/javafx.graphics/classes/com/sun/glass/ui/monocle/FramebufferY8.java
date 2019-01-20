@@ -35,12 +35,11 @@ import java.nio.ShortBuffer;
 import java.nio.channels.WritableByteChannel;
 
 /**
- * FramebufferY8 holds a buffer used to compose JavaFX scenes. The buffer stores
- * 32-bit pixels in ARGB32 format and is either the Linux frame buffer itself or
- * an off-screen composition buffer. This class can write the contents of this
- * buffer to a target byte channel, or copy them to a target byte buffer, as
- * pixels in the 32-bit ARGB32 color format, the 16-bit RGB565 color format, or
- * the 8-bit Y8 grayscale format.
+ * Provides a buffer for composing JavaFX scenes. This class provides a 32-bit
+ * composition buffer that is either the Linux frame buffer itself or an
+ * off-screen buffer. It can write the contents of the buffer to a byte channel
+ * or a byte buffer in one of three pixel formats: 32-bit ARGB32 color, 16-bit
+ * RGB565 color, or 8-bit Y8 grayscale.
  */
 class FramebufferY8 extends Framebuffer {
 
@@ -62,13 +61,14 @@ class FramebufferY8 extends Framebuffer {
     /**
      * Creates a new FramebufferY8.
      *
-     * @param bb the 32-bit ARGB32 composition buffer.
-     * @param width the width of the buffer in pixels.
-     * @param height the height of the buffer in pixels.
-     * @param depth the color depth of the target, in bits per pixel.
-     * @param clear <code>true</code> to clear the buffer on the first upload of
-     * each frame unless that upload already overwrites the entire buffer;
-     * otherwise <code>false</code>.
+     * @param bb the 32-bit composition buffer
+     * @param width the width of the buffer in pixels
+     * @param height the height of the buffer in pixels
+     * @param depth the color depth of the target channel or buffer, in bits per
+     * pixel
+     * @param clear {@code true} to clear the buffer on the first upload of each
+     * frame unless that upload already overwrites the entire buffer; otherwise
+     * {@code false}
      */
     FramebufferY8(ByteBuffer bb, int width, int height, int depth, boolean clear) {
         super(bb, width, height, depth, clear);
@@ -80,19 +80,20 @@ class FramebufferY8 extends Framebuffer {
     }
 
     /**
-     * Copies the next pixel to a ByteBuffer with 8-bit Y8 pixels. Luma Y' can
+     * Copies the next pixel to a byte buffer with 8-bit Y8 pixels. Luma Y' can
      * be calculated from gamma-corrected R'G'B' using the Rec. 601 or Rec. 709
      * coefficients. This method uses the coefficients from Rec. 709.
-     * <pre>
+     * <pre>{@code
      * Rec. 601: Y' = 0.299  × R' + 0.587  × G' + 0.114  × B'
      * Rec. 709: Y' = 0.2126 × R' + 0.7152 × G' + 0.0722 × B'
-     * </pre>
-     * <b>Note:</b> Java rounds toward zero when converting a float to an int,
-     * so this method adds 0.5 before the type conversion so that the number
-     * ends up rounded to the nearest integer.
+     * }</pre>
      *
-     * @param source the source IntBuffer in ARGB32 format.
-     * @param target the target ByteBuffer in Y8 format.
+     * @implNote Java rounds toward zero when converting a float to an int, so
+     * this method adds 0.5 before the type conversion so that the number ends
+     * up rounded to the nearest integer.
+     *
+     * @param source the source IntBuffer in ARGB32 format
+     * @param target the target ByteBuffer in Y8 format
      */
     private void copyNextPixel(IntBuffer source, ByteBuffer target) {
         int pixel32 = source.get();
@@ -104,10 +105,10 @@ class FramebufferY8 extends Framebuffer {
     }
 
     /**
-     * Copies the next pixel to a ShortBuffer with 16-bit RGB565 pixels.
+     * Copies the next pixel to a short buffer with 16-bit RGB565 pixels.
      *
-     * @param source the source IntBuffer in ARGB32 format.
-     * @param target the target ShortBuffer in RGB565 format.
+     * @param source the source IntBuffer in ARGB32 format
+     * @param target the target ShortBuffer in RGB565 format
      */
     private void copyNextPixel(IntBuffer source, ShortBuffer target) {
         int pixel32 = source.get();
@@ -121,13 +122,9 @@ class FramebufferY8 extends Framebuffer {
     /**
      * Writes the contents of the composition buffer to the output channel,
      * converting the pixel format as necessary.
-     * <p>
-     * <b>Note:</b> When multi-core processors and high-resolution screens are
-     * more common in embedded devices, consider converting the pixels with a
-     * parallel stream operation instead of using <i>for loops</i>.
      *
-     * @param out the output channel.
-     * @throws IOException if an error occurs writing to the channel.
+     * @param out the output channel
+     * @throws IOException if an error occurs writing to the channel
      */
     @Override
     void write(WritableByteChannel out) throws IOException {
@@ -183,7 +180,7 @@ class FramebufferY8 extends Framebuffer {
      * Copies the contents of the composition buffer to the output buffer,
      * converting the pixel format as necessary.
      *
-     * @param out the output buffer.
+     * @param out the output buffer
      */
     @Override
     void copyToBuffer(ByteBuffer out) {

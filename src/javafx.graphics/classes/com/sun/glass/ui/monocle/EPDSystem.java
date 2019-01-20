@@ -28,22 +28,11 @@ import com.sun.glass.utils.NativeLibLoader;
 import java.security.Permission;
 
 /**
- * EPDSystem provides a Java-language interface to the device API of the
- * Electrophoretic Display Controller (EPDC) frame buffer driver. EPDSystem is a
- * singleton. Its instance is obtained by calling the
- * {@link EPDSystem#getEPDSystem} method. This class also extends
- * {@link LinuxSystem.FbVarScreenInfo} to provide extra fields in
- * <code>fb_var_screeninfo</code> defined in <i>linux/fb.h</i>.
- * <p>
- * The EPDC frame buffer device API is documented in the <i>i.MX Linux Reference
- * Manual</i> available on the <a href="https://www.nxp.com/">NXP website</a>
- * (registration required). On the NXP home page, click Products, ARM
- * Processors, i.MX Application Processors, then i.MX 6 Processors, for example.
- * Select the i.MX6SLL Product in the chart; then click the Documentation tab.
- * Look for a download with a label like L4.1.15_2.1.0_LINUX_DOCS under the
- * Supporting Information section. After downloading and expanding the archive,
- * the reference manual is found in the <i>doc</i> directory as the file
- * <i>i.MX_Linux_Reference_Manual.pdf</i>.
+ * A Java-language interface to the device API of the Electrophoretic Display
+ * Controller (EPDC) frame buffer driver. EPDSystem is a singleton. Its instance
+ * is obtained by calling the {@link EPDSystem#getEPDSystem} method. This class
+ * also extends {@link LinuxSystem.FbVarScreenInfo} to provide all of the fields
+ * in {@code fb_var_screeninfo}, defined in {@code linux/fb.h}.
  */
 class EPDSystem {
 
@@ -103,7 +92,7 @@ class EPDSystem {
     static final int AUTO_UPDATE_MODE_AUTOMATIC_MODE = 1;
 
     /**
-     * The Snapshot update scheme processes the contents of the frame buffer
+     * Snapshot update scheme, which processes the contents of the frame buffer
      * immediately and stores the update in a memory buffer internal to the
      * driver. When the IOCTL call to {@link #MXCFB_SEND_UPDATE} returns, the
      * frame buffer region is free and can be modified without affecting the
@@ -112,7 +101,7 @@ class EPDSystem {
     static final int UPDATE_SCHEME_SNAPSHOT = 0;
 
     /**
-     * The Queue update scheme uses a work queue to handle the processing of
+     * Queue update scheme, which uses a work queue to handle the processing of
      * updates asynchronously. When updates are submitted with an IOCTL call to
      * {@link #MXCFB_SEND_UPDATE}, they are added to the queue and processed in
      * order as the EPDC hardware resources become available. The frame buffer
@@ -122,27 +111,29 @@ class EPDSystem {
     static final int UPDATE_SCHEME_QUEUE = 1;
 
     /**
-     * The Queue and Merge update scheme adds a merging step to the Queue update
-     * scheme. Before an update is added to the work queue, it is compared with
-     * other pending updates. If a pending update matches the mode and flags of
-     * the current update and also overlaps the update region, it will be merged
-     * with the current update. After all such merges, the final merged update
-     * is submitted to the queue.
+     * Queue and Merge update scheme, which adds a merging step to the Queue
+     * update scheme. Before an update is added to the work queue, it is
+     * compared with other pending updates. If a pending update matches the mode
+     * and flags of the current update and also overlaps the update region, it
+     * will be merged with the current update. After all such merges, the final
+     * merged update is submitted to the queue.
      */
     static final int UPDATE_SCHEME_QUEUE_AND_MERGE = 2;
 
     /**
-     * Applies the waveform to only the pixels that change in a given region.
+     * Partial update mode, which applies the waveform to only the pixels that
+     * change in a given region.
      */
     static final int UPDATE_MODE_PARTIAL = 0x0;
 
     /**
-     * Applies the waveform to all pixels in a given region.
+     * Full update mode, which applies the waveform to all pixels in a given
+     * region.
      */
     static final int UPDATE_MODE_FULL = 0x1;
 
     /**
-     * The waveform mode value that requests the driver to select the actual
+     * Auto waveform mode, which requests the driver to select the actual
      * waveform mode automatically based on the contents of the updated region.
      */
     static final int WAVEFORM_MODE_AUTO = 257;
@@ -154,31 +145,31 @@ class EPDSystem {
     static final int TEMP_USE_AMBIENT = 0x1000;
 
     /**
-     * Enables inversion of all pixels in the updated region.
+     * An update flag to enable inversion of all pixels in the updated region.
      */
     static final int EPDC_FLAG_ENABLE_INVERSION = 0x01;
 
     /**
-     * Enables black-and-white posterization of all pixels in the updated
-     * region.
+     * An update flag to enable black-and-white posterization of all pixels in
+     * the updated region.
      */
     static final int EPDC_FLAG_FORCE_MONOCHROME = 0x02;
 
     /**
-     * Enables dithering of an 8-bit grayscale frame buffer to 1-bit black and
-     * white, if supported by the driver or hardware.
+     * An update flag to enable dithering of an 8-bit grayscale frame buffer to
+     * 1-bit black and white, if supported by the driver or hardware.
      */
     static final int EPDC_FLAG_USE_DITHERING_Y1 = 0x2000;
 
     /**
-     * Enables dithering of an 8-bit grayscale frame buffer to 4-bit grayscale,
-     * if supported by the driver or hardware.
+     * An update flag to enable dithering of an 8-bit grayscale frame buffer to
+     * 4-bit grayscale, if supported by the driver or hardware.
      */
     static final int EPDC_FLAG_USE_DITHERING_Y4 = 0x4000;
 
     /**
      * The power-down delay value to disable the powering down of the EPDC and
-     * display power supplies altogether.
+     * display power supplies.
      */
     static final int FB_POWERDOWN_DISABLE = -1;
 
@@ -196,7 +187,7 @@ class EPDSystem {
 
     /**
      * Direct update waveform (0x0...0xF → 0x0 or 0xF in ~260 ms). Changes gray
-     * pixel values to black or white.
+     * pixels to black or white.
      * <p>
      * "A second exemplary drive scheme provides waveforms that may be used to
      * change the display state of a pixel from any initial display state to a
@@ -233,7 +224,7 @@ class EPDSystem {
 
     /**
      * Animation waveform (0x0 or 0xF → 0x0 or 0xF in ~120 ms). Provides a fast
-     * 1-bit black-and-white animation mode of about eight frames per second.
+     * 1-bit black-and-white animation mode of up to eight frames per second.
      * <p>
      * "A fifth exemplary drive scheme provides waveforms that may be used to
      * change the display state of a pixel from an initial display state to a
@@ -262,11 +253,11 @@ class EPDSystem {
 
     /**
      * Obtains the single instance of EPDSystem. Calling this method requires
-     * the RuntimePermission "loadLibrary.*". The {@link #loadLibrary} method
-     * must be called on the EPDSystem instance before any system calls can be
-     * made using it.
+     * the runtime permission "{@code loadLibrary.*}". The {@link #loadLibrary}
+     * method must be called on the EPDSystem instance before any system calls
+     * can be made using it.
      *
-     * @return the EPDSystem instance.
+     * @return the EPDSystem instance
      */
     static EPDSystem getEPDSystem() {
         checkPermissions();
@@ -331,7 +322,7 @@ class EPDSystem {
     }
 
     /**
-     * Loads the native libraries required to make system calls using the
+     * Loads the native libraries required to make system calls using this
      * EPDSystem instance. This method must be called before any other instance
      * methods of EPDSystem. If this method is called multiple times, it has no
      * effect after the first call.
@@ -340,8 +331,7 @@ class EPDSystem {
         NativeLibLoader.loadLibrary("glass_monocle_epd");
 
         /*
-         * Creating the IOCTL request codes requires the native library for the
-         * "sizeof" function.
+         * Creating IOCTL request codes requires the native "sizeof" function.
          */
         var modes = new MxcfbWaveformModes();
         var update = new MxcfbUpdateData();
@@ -358,21 +348,20 @@ class EPDSystem {
     }
 
     /**
-     * The native function for passing an integer parameter by value to the
-     * device driver through the IOCTL interface. ({@link LinuxSystem#ioctl},
-     * instead, takes a pointer as its third parameter, passing its data by
-     * reference.)
+     * Passes an integer parameter by value to the device driver through the
+     * IOCTL interface. ({@link LinuxSystem#ioctl}, instead, takes a pointer as
+     * its third parameter, passing its data by reference.)
      *
-     * @param fd an open file descriptor.
-     * @param request a device-dependent request code.
-     * @param value the integer value.
-     * @return On success zero is returned. On error, -1 is returned, and
-     * <i>errno</i> is set appropriately.
+     * @param fd an open file descriptor
+     * @param request a device-dependent request code
+     * @param value the integer value
+     * @return 0 if successful; otherwise -1 and {@code errno} is set
+     * appropriately
      */
     native int ioctl(long fd, int request, int value);
 
     /**
-     * An integer structure for passing an integer by value in an IOCTL call.
+     * A structure for passing an integer by value in an IOCTL call.
      */
     static class IntStructure extends C.Structure {
 
@@ -389,8 +378,8 @@ class EPDSystem {
     }
 
     /**
-     * MxcfbWaveformModes wraps the C structure
-     * <code>mxcfb_waveform_modes</code> defined in <i>mxcfb.h</i>.
+     * Wraps the C structure {@code mxcfb_waveform_modes}, defined in
+     * {@code mxcfb.h}.
      */
     static class MxcfbWaveformModes extends C.Structure {
 
@@ -419,8 +408,8 @@ class EPDSystem {
     }
 
     /**
-     * MxcfbUpdateData wraps the C structure <code>mxcfb_update_data</code>
-     * defined in <i>mxcfb.h</i>.
+     * Wraps the C structure {@code mxcfb_update_data}, defined in
+     * {@code mxcfb.h}.
      */
     static class MxcfbUpdateData extends C.Structure {
 
@@ -484,8 +473,8 @@ class EPDSystem {
     }
 
     /**
-     * FbVarScreenInfo wraps the entire C structure
-     * <code>fb_var_screeninfo</code> defined in <i>linux/fb.h</i>.
+     * Wraps the entire C structure {@code fb_var_screeninfo}, defined in
+     * {@code linux/fb.h}.
      */
     static class FbVarScreenInfo extends LinuxSystem.FbVarScreenInfo {
 

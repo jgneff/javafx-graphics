@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 /**
- * EPDSettings contains the values of the EPD system properties.
+ * Provides the values of the EPD system properties.
  */
 class EPDSettings {
 
@@ -85,10 +85,10 @@ class EPDSettings {
     };
 
     /**
-     * Obtains a new instance of EPDSettings with the current EPD system
-     * property values.
+     * Obtains a new instance of this class with the current values of the EPD
+     * system properties.
      *
-     * @return the new EPDSettings.
+     * @return a new EPDSettings instance
      */
     static EPDSettings newInstance() {
         return AccessController.doPrivileged(
@@ -111,7 +111,8 @@ class EPDSettings {
     final int flags;
 
     /**
-     * Creates a new EPDSettings.
+     * Creates a new EPDSettings, capturing the current values of the EPD system
+     * properties.
      */
     private EPDSettings() {
         if (logger.isLoggable(Level.FINE)) {
@@ -154,11 +155,11 @@ class EPDSettings {
     /**
      * Gets an integer system property.
      *
-     * @param key the property name.
-     * @param def the default value.
-     * @param list a list of the permitted values for the property.
+     * @param key the property name
+     * @param def the default value
+     * @param list a list of the permitted values for the property
      * @return the value provided for the property if it is equal to one of the
-     * permitted values; otherwise, the default value.
+     * permitted values; otherwise, the default value
      */
     private int getInteger(String key, int def, int... list) {
         int value = Integer.getInteger(key, def);

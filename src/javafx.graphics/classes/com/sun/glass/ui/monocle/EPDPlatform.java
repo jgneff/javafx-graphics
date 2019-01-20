@@ -25,13 +25,13 @@
 package com.sun.glass.ui.monocle;
 
 /**
- * EPDPlatform is the native platform for a Linux system with an electrophoretic
- * display, also called an e-paper display.
+ * A native platform for a Linux system with an electrophoretic display, also
+ * called an e-paper display.
  */
 class EPDPlatform extends LinuxPlatform {
 
     /**
-     * Creates a new EPDPlatform.
+     * Creates a new Monocle EPD Platform.
      */
     EPDPlatform() {
         EPDSystem.getEPDSystem().loadLibrary();
