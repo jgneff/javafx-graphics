@@ -174,6 +174,7 @@ class EPDScreen implements NativeScreen {
      * Clears the screen.
      */
     private void clearScreen() {
+        System.out.println(this);
         pixels.clearBufferContents();
         writeBuffer();
         fbDevice.clear();
@@ -248,7 +249,7 @@ class EPDScreen implements NativeScreen {
 
     @Override
     public String toString() {
-        return MessageFormat.format("{0} {1} px × {2} px × {3} bpp @ {4} ppi",
-                fbPath, getWidth(), getHeight(), getDepth(), getDPI());
+        return MessageFormat.format("{0}[width={1}px,height={2}px,depth={3}bpp,DPI={4}ppi,scale={5}]",
+                getClass().getName(), getWidth(), getHeight(), getDepth(), getDPI(), getScale());
     }
 }
