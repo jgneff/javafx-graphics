@@ -39,20 +39,20 @@ import java.nio.ByteBuffer;
  * extensions to that interface provided by the Electrophoretic Display
  * Controller (EPDC) frame buffer driver.
  * <p>
- * The Linux frame buffer device interface is documented in <em>The Frame Buffer
- * Device API</em> found in the Ubuntu package called <em>linux-doc</em> (see
- * {@code /usr/share/doc/linux-doc/fb/api.txt.gz}).
+ * The Linux frame buffer device interface is documented in <cite>The Frame
+ * Buffer Device API</cite> found in the Ubuntu package called <i>linux-doc</i>
+ * (see <i>/usr/share/doc/linux-doc/fb/api.txt.gz</i>).</p>
  * <p>
- * The EPDC frame buffer driver extensions are documented in the <em>i.MX Linux
- * Reference Manual</em> available on the <a href="https://www.nxp.com/">NXP
- * website</a> (registration required). On the NXP home page, click Products,
- * ARM Processors, i.MX Application Processors, and then i.MX 6 Processors, for
- * example. Select the i.MX6SLL Product in the chart; then click the
- * Documentation tab. Look for a download with a label for Linux documents, like
- * {@code L4.1.15_2.1.0_LINUX_DOCS}, under the Supporting Information section.
- * After downloading and expanding the archive, the reference manual is found in
- * the <em>doc</em> directory as the file
- * {@code i.MX_Linux_Reference_Manual.pdf}.
+ * The EPDC frame buffer driver extensions are documented in the <cite>i.MX
+ * Linux Reference Manual</cite> available on the
+ * <a href="https://www.nxp.com/">NXP website</a> (registration required). On
+ * the NXP home page, click Products, ARM Processors, i.MX Application
+ * Processors, and then i.MX 6 Processors, for example. Select the i.MX6SLL
+ * Product in the chart; then click the Documentation tab. Look for a download
+ * with a label for Linux documents, like L4.1.15_2.1.0_LINUX_DOCS, under the
+ * Supporting Information section. After downloading and expanding the archive,
+ * the reference manual is found in the <i>doc</i> directory as the file
+ * <i>i.MX_Linux_Reference_Manual.pdf</i>.</p>
  */
 class EPDFrameBuffer {
 
@@ -90,12 +90,12 @@ class EPDFrameBuffer {
     private int lastMarker;
 
     /**
-     * Creates a new EPDFrameBuffer for the given frame buffer device.
+     * Creates a new {@code EPDFrameBuffer} for the given frame buffer device.
      * <p>
      * The geometry of the Linux frame buffer is shown below for various color
-     * depths and rotations on a sample system, as printed by the <em>fbset</em>
+     * depths and rotations on a sample system, as printed by the <i>fbset</i>
      * command. The first set are for landscape mode, while the second set are
-     * for portrait.
+     * for portrait.</p>
      * <pre>{@code
      * geometry 800 600 800 640 32 (line length: 3200)
      * geometry 800 600 800 1280 16 (line length: 1600)
@@ -114,9 +114,11 @@ class EPDFrameBuffer {
      * four pixels to the right. The JavaFX application should be left-aligned
      * and ignore the extra eight pixels on the right of its screen.
      *
-     * @param fbPath the frame buffer device path, such as {@code /dev/fb0}
-     * @throws IOException if an error occurs while opening the frame buffer
+     * @param fbPath the frame buffer device path, such as <i>/dev/fb0</i>
+     * @throws IOException if an error occurs when opening the frame buffer
      * device or when getting or setting the frame buffer configuration
+     * @throws IllegalArgumentException if the EPD settings specify an
+     * unsupported color depth
      */
     EPDFrameBuffer(String fbPath) throws IOException {
         settings = EPDSettings.newInstance();
@@ -198,7 +200,7 @@ class EPDFrameBuffer {
 
     /**
      * Gets the variable screen information of the frame buffer. Run the
-     * <em>fbset</em> command as <em>root</em> to print the screen information.
+     * <i>fbset</i> command as <i>root</i> to print the screen information.
      *
      * @param screen the object representing the variable screen information
      * @throws IOException if an error occurs getting the information
@@ -217,13 +219,13 @@ class EPDFrameBuffer {
      * "To ensure that the EPDC driver receives the initialization request, the
      * {@code activate} field of the {@code fb_var_screeninfo} parameter should
      * be set to {@code FB_ACTIVATE_FORCE}." [EPDC Panel Initialization,
-     * <em>i.MX Linux Reference Manual</em>]
+     * <cite>i.MX Linux Reference Manual</cite>]</p>
      * <p>
      * To request a change to 8-bit grayscale format, the bits per pixel must be
      * set to 8 and the grayscale value must be set to one of the two valid
      * grayscale format values: {@code GRAYSCALE_8BIT} or
      * {@code GRAYSCALE_8BIT_INVERTED}. [Grayscale Framebuffer Selection,
-     * <em>i.MX Linux Reference Manual</em>]
+     * <cite>i.MX Linux Reference Manual</cite>]</p>
      *
      * @param screen the object representing the variable screen information
      * @throws IOException if an error occurs setting the information
@@ -335,9 +337,9 @@ class EPDFrameBuffer {
      * memory region have been modified.
      * <p>
      * Automatic mode is available only when it has been enabled in the Linux
-     * kernel by the {@code CONFIG_FB_MXC_EINK_AUTO_UPDATE_MODE} option. You can
-     * find the configuration options used to build the kernel in a file under
-     * {@code /proc} or {@code /boot}, such as {@code /proc/config.gz}.
+     * kernel by the option CONFIG_FB_MXC_EINK_AUTO_UPDATE_MODE. You can find
+     * the configuration options used to build the kernel in a file under
+     * <i>/proc</i> or <i>/boot</i>, such as <i>/proc/config.gz</i>.</p>
      *
      * @param mode the automatic update mode as one of the following:
      * <ul>
@@ -430,7 +432,7 @@ class EPDFrameBuffer {
      * Blocks and waits for a previous update request to complete.
      *
      * @param marker the marker to identify a particular update, returned by
-     * {@linkplain #sendUpdate(MxcfbUpdateData, int) sendUpdate}
+     * {@link #sendUpdate(MxcfbUpdateData, int) sendUpdate}
      */
     private void waitForUpdateComplete(int marker) {
         /*
@@ -503,12 +505,12 @@ class EPDFrameBuffer {
      * Initializes the EPDC frame buffer device, setting the update scheme to
      * {@link EPDSystem#UPDATE_SCHEME_SNAPSHOT}.
      *
-     * @implNote In the following notes, <em>synchronization</em> means waiting
+     * @implNote In the following notes, <i>synchronization</i> means waiting
      * for the previous update to complete before sending the next update.
      * <p>
      * Regarding the update scheme, only the Snapshot scheme can be used with or
      * without synchronization while avoiding problems with either the frame
-     * rate or the integrity of the frames displayed on screen.
+     * rate or the integrity of the frames displayed on screen.</p>
      * <p>
      * Without synchronization, if update collisions occur, the Queue scheme
      * drops frames, the Queue and Merge scheme combines frames, and the
@@ -517,7 +519,7 @@ class EPDFrameBuffer {
      * update collisions cannot occur, the Queue and Merge scheme is the same as
      * the Queue scheme, the Queue scheme must copy each frame from an
      * off-screen composition buffer, but the Snapshot scheme can use a 32-bit
-     * Linux frame buffer directly, avoiding the extra copying step.
+     * Linux frame buffer directly, avoiding the extra copying step.</p>
      */
     void init() {
         setWaveformModes(EPDSystem.WAVEFORM_MODE_INIT, EPDSystem.WAVEFORM_MODE_DU,
@@ -534,6 +536,9 @@ class EPDFrameBuffer {
      * zeros when called. This method sends two direct updates, all black
      * followed by all white, to refresh the screen and clear any ghosting
      * effects, and returns when both updates are complete.
+     * <p>
+     * <strong>This method is not thread safe</strong>, but it is invoked only
+     * once from the Event Thread during initialization.</p>
      */
     void clear() {
         lastMarker = sendUpdate(EPDSystem.UPDATE_MODE_FULL,
@@ -547,6 +552,9 @@ class EPDFrameBuffer {
      * Sends the updated contents of the Linux frame buffer to the EPDC driver,
      * optionally synchronizing with the driver by first waiting for the
      * previous update to complete.
+     * <p>
+     * <strong>This method is not thread safe</strong>, but it is invoked only
+     * from the JavaFX Application Thread.</p>
      */
     void sync() {
         if (!settings.noWait) {

@@ -40,17 +40,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Provides test cases for the FramebufferY8 class.
+ * Provides test cases for the {@code FramebufferY8} class.
  */
 public class FramebufferY8Test {
 
     /**
      * An image with all 16,777,216 colors of the 24-bit RGB palette in a 4096 ×
-     * 4096 bitmap. The file was created by <em>Naruto_64</em> and published
-     * under the Creative Commons "CC BY-SA 4.0" license. For details, see the
-     * Wikimedia Commons page at
+     * 4096 bitmap. The image was created by Naruto_64 and published on
+     * Wikimedia Commons under the Creative Commons "CC BY-SA 4.0" license.
+     * <p>
+     * <img width="256" height="256" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/16777216colors_diffpatt.png/256px-16777216colors_diffpatt.png"/></p>
+     *
+     * @see
      * <a href="https://commons.wikimedia.org/wiki/File:16777216colors_diffpatt.png">
-     * File:16777216colors diffpatt.png</a>.
+     * File:16777216colors diffpatt.png - Wikimedia Commons</a>
      */
     private static final String ALL_24BIT_RGB = "16777216colors_diffpatt.png";
 
@@ -60,8 +63,8 @@ public class FramebufferY8Test {
 
     /**
      * Loads the sample image into the composition buffer held by the
-     * FramebufferY8 class. This method runs only once before all of the test
-     * cases. It loads the image into the buffer as 32-bit pixels in ARGB32
+     * {@code FramebufferY8} class. This method runs only once before all of the
+     * test cases. It loads the image into the buffer as 32-bit pixels in ARGB32
      * format.
      *
      * @throws IOException if an error occurs loading the image
@@ -84,7 +87,7 @@ public class FramebufferY8Test {
     }
 
     /**
-     * Tests the copyToBuffer method of the FramebufferY8 class by comparing its
+     * Tests the {@code FramebufferY8.copyToBuffer} method by comparing its
      * output to that of the original implementation in its superclass.
      *
      * @param bitsPerPixel the number of bits per pixel in the output buffer
@@ -109,8 +112,8 @@ public class FramebufferY8Test {
     }
 
     /**
-     * Tests the write method of the FramebufferY8 class by comparing its output
-     * to that of the original implementation in its superclass.
+     * Tests the {@code FramebufferY8.write} method by comparing its output to
+     * that of the original implementation in its superclass.
      *
      * @param bitsPerPixel the number of bits per pixel in the output buffer
      * @param bytesPerPixel the number of bytes per pixel in the output buffer

@@ -30,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Provides test cases for the EPDSettings class.
+ * Provides test cases for the {@code EPDSettings} class.
  */
 public class EPDSettingsTest {
 

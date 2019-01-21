@@ -88,7 +88,7 @@ class EPDSettings {
      * Obtains a new instance of this class with the current values of the EPD
      * system properties.
      *
-     * @return a new EPDSettings instance
+     * @return a new {@code EPDSettings} instance
      */
     static EPDSettings newInstance() {
         return AccessController.doPrivileged(

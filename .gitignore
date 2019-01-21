@@ -1,5 +1,6 @@
 bin/
 build/
 dist/
+docs/
 nbproject/private/
 notes/

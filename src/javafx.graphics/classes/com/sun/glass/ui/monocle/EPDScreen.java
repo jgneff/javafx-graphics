@@ -86,6 +86,8 @@ class EPDScreen implements NativeScreen {
 
     /**
      * Creates a native screen for the electrophoretic display.
+     *
+     * @throws IllegalStateException if an error occurs opening the frame buffer
      */
     EPDScreen() {
         fbPath = AccessController.doPrivileged((PrivilegedAction<String>) ()

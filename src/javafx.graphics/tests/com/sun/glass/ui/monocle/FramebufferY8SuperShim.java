@@ -36,7 +36,7 @@ import java.nio.channels.WritableByteChannel;
 public class FramebufferY8SuperShim extends Framebuffer {
 
     /**
-     * Creates a new FramebufferY8SuperShim.
+     * Creates a new {@code FramebufferY8SuperShim}.
      *
      * @param bb the 32-bit composition buffer
      * @param width the width of the buffer in pixels

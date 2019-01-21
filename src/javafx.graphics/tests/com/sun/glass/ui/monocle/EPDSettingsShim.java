@@ -42,7 +42,7 @@ public class EPDSettingsShim {
      * Obtains a new instance of this class with the current values of the EPD
      * system properties.
      *
-     * @return a new EPDSettingsShim instance
+     * @return a new {@code EPDSettingsShim} instance
      */
     public static EPDSettingsShim newInstance() {
         return new EPDSettingsShim(EPDSettings.newInstance());
@@ -50,9 +50,9 @@ public class EPDSettingsShim {
 
     /**
      * Sets the public fields of this object to the corresponding
-     * package-private fields of the EPDSettings instance.
+     * package-private fields of the {@code EPDSettings} instance.
      *
-     * @param settings an instance of EPDSettings
+     * @param settings an instance of {@code EPDSettings}
      */
     private EPDSettingsShim(EPDSettings settings) {
         bitsPerPixel = settings.bitsPerPixel;

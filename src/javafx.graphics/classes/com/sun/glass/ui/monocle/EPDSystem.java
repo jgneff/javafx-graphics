@@ -29,10 +29,10 @@ import java.security.Permission;
 
 /**
  * A Java-language interface to the device API of the Electrophoretic Display
- * Controller (EPDC) frame buffer driver. EPDSystem is a singleton. Its instance
- * is obtained by calling the {@link EPDSystem#getEPDSystem} method. This class
- * also extends {@link LinuxSystem.FbVarScreenInfo} to provide all of the fields
- * in {@code fb_var_screeninfo}, defined in {@code linux/fb.h}.
+ * Controller (EPDC) frame buffer driver. {@code EPDSystem} is a singleton. Its
+ * instance is obtained by calling the {@link EPDSystem#getEPDSystem} method.
+ * This class also extends {@link LinuxSystem.FbVarScreenInfo} to provide all of
+ * the fields in {@code fb_var_screeninfo}, defined in <i>linux/fb.h</i>.
  */
 class EPDSystem {
 
@@ -180,8 +180,8 @@ class EPDSystem {
      * "A first exemplary drive scheme provides waveforms that may be used to
      * change the display state of a pixel from any initial display state to a
      * new display state of white. The first drive scheme may be referred to as
-     * an initialization or 'INIT' drive scheme." [United States Patent
-     * 9,280,955]
+     * an initialization or 'INIT' drive scheme." [<cite>United States Patent
+     * 9,280,955</cite>]</p>
      */
     static final int WAVEFORM_MODE_INIT = 0;
 
@@ -192,7 +192,8 @@ class EPDSystem {
      * "A second exemplary drive scheme provides waveforms that may be used to
      * change the display state of a pixel from any initial display state to a
      * new display state of either white or black. The second drive scheme may
-     * be referred to as a 'DU' drive scheme." [United States Patent 9,280,955]
+     * be referred to as a 'DU' drive scheme." [<cite>United States Patent
+     * 9,280,955</cite>]</p>
      */
     static final int WAVEFORM_MODE_DU = 1;
 
@@ -205,7 +206,7 @@ class EPDSystem {
      * new display state. The initial state may be any four-bit (16 gray states)
      * value. The new display state may be any two-bit (4 gray states) value.
      * The third drive scheme may be referred to as a 'GC4' drive scheme."
-     * [United States Patent 9,280,955]
+     * [<cite>United States Patent 9,280,955</cite>]</p>
      */
     static final int WAVEFORM_MODE_GC4 = 3;
 
@@ -218,7 +219,7 @@ class EPDSystem {
      * new display state. The initial state may be any four-bit (16 gray states)
      * value. The new display state may be any four-bit (16 gray states) value.
      * The fourth drive scheme may be referred to as a 'GC16' drive scheme."
-     * [United States Patent 9,280,955]
+     * [<cite>United States Patent 9,280,955</cite>]</p>
      */
     static final int WAVEFORM_MODE_GC16 = 2;
 
@@ -233,7 +234,7 @@ class EPDSystem {
      * referred to as an 'A2' drive scheme. An advantage of A2 waveforms is that
      * they have generally short waveform periods, providing rapid display
      * updates. A disadvantage of A2 waveforms is that there use may result in
-     * ghosting artifacts." [United States Patent 9,280,955]
+     * ghosting artifacts." [<cite>United States Patent 9,280,955</cite>]</p>
      */
     static final int WAVEFORM_MODE_A2 = 4;
 
@@ -252,12 +253,12 @@ class EPDSystem {
     }
 
     /**
-     * Obtains the single instance of EPDSystem. Calling this method requires
-     * the runtime permission "{@code loadLibrary.*}". The {@link #loadLibrary}
-     * method must be called on the EPDSystem instance before any system calls
-     * can be made using it.
+     * Obtains the single instance of {@code EPDSystem}. Calling this method
+     * requires the "loadLibrary.*" {@code RuntimePermission}. The
+     * {@link #loadLibrary} method must be called on the EPDSystem instance
+     * before any system calls can be made using it.
      *
-     * @return the EPDSystem instance
+     * @return the {@code EPDSystem} instance
      */
     static EPDSystem getEPDSystem() {
         checkPermissions();
@@ -315,7 +316,7 @@ class EPDSystem {
     private final LinuxSystem system;
 
     /**
-     * Creates the single instance of EPDSystem.
+     * Creates the single instance of {@code EPDSystem}.
      */
     private EPDSystem() {
         system = LinuxSystem.getLinuxSystem();
@@ -323,9 +324,9 @@ class EPDSystem {
 
     /**
      * Loads the native libraries required to make system calls using this
-     * EPDSystem instance. This method must be called before any other instance
-     * methods of EPDSystem. If this method is called multiple times, it has no
-     * effect after the first call.
+     * {@code EPDSystem} instance. This method must be called before any other
+     * instance methods of {@code EPDSystem}. If this method is called multiple
+     * times, it has no effect after the first call.
      */
     void loadLibrary() {
         NativeLibLoader.loadLibrary("glass_monocle_epd");
@@ -379,7 +380,7 @@ class EPDSystem {
 
     /**
      * Wraps the C structure {@code mxcfb_waveform_modes}, defined in
-     * {@code mxcfb.h}.
+     * <i>mxcfb.h</i>.
      */
     static class MxcfbWaveformModes extends C.Structure {
 
@@ -409,7 +410,7 @@ class EPDSystem {
 
     /**
      * Wraps the C structure {@code mxcfb_update_data}, defined in
-     * {@code mxcfb.h}.
+     * <i>mxcfb.h</i>.
      */
     static class MxcfbUpdateData extends C.Structure {
 
@@ -474,7 +475,7 @@ class EPDSystem {
 
     /**
      * Wraps the entire C structure {@code fb_var_screeninfo}, defined in
-     * {@code linux/fb.h}.
+     * <i>linux/fb.h</i>.
      */
     static class FbVarScreenInfo extends LinuxSystem.FbVarScreenInfo {
 
