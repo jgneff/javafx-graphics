@@ -121,8 +121,9 @@ class EPDScreen implements NativeScreen {
                 fbMapping = null;
             }
         } catch (IOException e) {
-            logger.severe("Failed opening frame buffer", e);
-            throw new IllegalStateException(e);
+            String msg = MessageFormat.format("Failed opening frame buffer: {0}", fbPath);
+            logger.severe(msg, e);
+            throw new IllegalStateException(msg, e);
         }
 
         /*
@@ -174,7 +175,6 @@ class EPDScreen implements NativeScreen {
      * Clears the screen.
      */
     private void clearScreen() {
-        System.out.println(this);
         pixels.clearBufferContents();
         writeBuffer();
         fbDevice.clear();
@@ -249,7 +249,7 @@ class EPDScreen implements NativeScreen {
 
     @Override
     public String toString() {
-        return MessageFormat.format("{0}[width={1}px,height={2}px,depth={3}bpp,DPI={4}ppi,scale={5}]",
+        return MessageFormat.format("{0}[width={1} height={2} depth={3} DPI={4} scale={5,number,0.0#}]",
                 getClass().getName(), getWidth(), getHeight(), getDepth(), getDPI(), getScale());
     }
 }

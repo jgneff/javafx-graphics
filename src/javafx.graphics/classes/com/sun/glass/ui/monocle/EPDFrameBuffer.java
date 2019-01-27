@@ -33,6 +33,7 @@ import com.sun.javafx.logging.PlatformLogger.Level;
 import com.sun.javafx.util.Logging;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.text.MessageFormat;
 
 /**
  * Represents the standard Linux frame buffer device interface plus the custom
@@ -168,8 +169,9 @@ class EPDFrameBuffer {
                 screen.setTransp(screen.p, 8, 24);
                 break;
             default:
-                logger.severe("Unsupported color depth: {0} bpp", settings.bitsPerPixel);
-                throw new IllegalArgumentException();
+                String msg = MessageFormat.format("Unsupported color depth: {0} bpp", settings.bitsPerPixel);
+                logger.severe(msg);
+                throw new IllegalArgumentException(msg);
         }
         screen.setActivate(screen.p, EPDSystem.FB_ACTIVATE_FORCE);
         screen.setRotate(screen.p, settings.rotate);
@@ -653,5 +655,11 @@ class EPDFrameBuffer {
      */
     int getBitDepth() {
         return bitsPerPixel;
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("{0}[width={1} height={2} bitDepth={3}]",
+                getClass().getName(), getWidth(), getHeight(), getBitDepth());
     }
 }

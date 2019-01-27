@@ -26,6 +26,7 @@ package com.sun.glass.ui.monocle;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -187,5 +188,10 @@ class EPDInputDeviceRegistry extends InputDeviceRegistry {
             devices.add(device);
             return device;
         }
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("{0}[devices={1}]", getClass().getName(), devices);
     }
 }

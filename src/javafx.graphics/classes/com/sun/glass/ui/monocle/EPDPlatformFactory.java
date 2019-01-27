@@ -31,6 +31,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.text.MessageFormat;
 
 /**
  * A factory object for creating the native platform on a Linux system with an
@@ -96,5 +97,11 @@ class EPDPlatformFactory extends NativePlatformFactory {
     @Override
     protected int getMinorVersion() {
         return MINOR_VERSION;
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("{0}[majorVersion={1} minorVersion={2} matches=\"{3} in {4}\"]",
+                getClass().getName(), getMajorVersion(), getMinorVersion(), FB_NAME, FB_FILE);
     }
 }

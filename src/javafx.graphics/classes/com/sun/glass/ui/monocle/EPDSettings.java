@@ -29,6 +29,7 @@ import com.sun.javafx.logging.PlatformLogger.Level;
 import com.sun.javafx.util.Logging;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -173,5 +174,13 @@ class EPDSettings {
             value = def;
         }
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("{0}[bitsPerPixel={1} rotate={2} "
+                + "noWait={3} waveformMode={4} grayscale={5} flags=0x{6}]",
+                getClass().getName(), bitsPerPixel, rotate,
+                noWait, waveformMode, grayscale, Integer.toHexString(flags));
     }
 }

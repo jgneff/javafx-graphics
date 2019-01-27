@@ -26,6 +26,7 @@ package com.sun.glass.ui.monocle;
 
 import com.sun.glass.utils.NativeLibLoader;
 import java.security.Permission;
+import java.text.MessageFormat;
 
 /**
  * A Java-language interface to the device API of the Electrophoretic Display
@@ -564,5 +565,22 @@ class EPDSystem {
         native void setVmode(long p, int vmode);
 
         native void setRotate(long p, int rotate);
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("{0}[MXCFB_SET_WAVEFORM_MODES=0x{1} MXCFB_SET_TEMPERATURE=0x{2} "
+                + "MXCFB_SET_AUTO_UPDATE_MODE=0x{3} MXCFB_SEND_UPDATE=0x{4} MXCFB_WAIT_FOR_UPDATE_COMPLETE=0x{5} "
+                + "MXCFB_SET_PWRDOWN_DELAY=0x{6} MXCFB_GET_PWRDOWN_DELAY=0x{7} MXCFB_SET_UPDATE_SCHEME=0x{8}]",
+                getClass().getName(),
+                Integer.toHexString(MXCFB_SET_WAVEFORM_MODES),
+                Integer.toHexString(MXCFB_SET_TEMPERATURE),
+                Integer.toHexString(MXCFB_SET_AUTO_UPDATE_MODE),
+                Integer.toHexString(MXCFB_SEND_UPDATE),
+                Integer.toHexString(MXCFB_WAIT_FOR_UPDATE_COMPLETE),
+                Integer.toHexString(MXCFB_SET_PWRDOWN_DELAY),
+                Integer.toHexString(MXCFB_GET_PWRDOWN_DELAY),
+                Integer.toHexString(MXCFB_SET_UPDATE_SCHEME)
+        );
     }
 }

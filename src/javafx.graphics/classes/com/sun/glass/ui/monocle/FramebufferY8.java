@@ -33,6 +33,7 @@ import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.nio.channels.WritableByteChannel;
+import java.text.MessageFormat;
 
 /**
  * Provides a buffer for composing JavaFX scenes. This class is given a 32-bit
@@ -78,21 +79,28 @@ class FramebufferY8 extends Framebuffer {
         this.height = height;
         this.bitDepth = depth;
         this.byteDepth = depth >>> BITS_TO_BYTES;
+        if (byteDepth != Integer.BYTES && byteDepth != Short.BYTES && byteDepth != Byte.BYTES) {
+            String msg = MessageFormat.format("Unsupported color depth: {0} bpp", bitDepth);
+            logger.severe(msg);
+            throw new IllegalArgumentException(msg);
+        }
     }
 
     /**
      * Copies the next 32-bit ARGB32 pixel to a byte buffer with 8-bit Y8
      * pixels. Luma Y' can be calculated from gamma-corrected R'G'B' using the
-     * Rec. 601 or Rec. 709 coefficients. This method uses the coefficients from
-     * Rec. 709.
+     * following coefficients. This method uses the coefficients from Rec. 709,
+     * which defines the same primaries and white point as the sRGB color space.
      * <pre>{@code
-     * Rec. 601: Y' = 0.299  × R' + 0.587  × G' + 0.114  × B'
-     * Rec. 709: Y' = 0.2126 × R' + 0.7152 × G' + 0.0722 × B'
+     * Simple average:  Y' = (R' + G' + B') / 3
+     * Rec. 601 (SDTV): Y' = 0.299  × R' + 0.587  × G' + 0.114  × B'
+     * Rec. 709 (HDTV): Y' = 0.2126 × R' + 0.7152 × G' + 0.0722 × B'
+     * Rec. 2100 (HDR): Y' = 0.2627 × R' + 0.6780 × G' + 0.0593 × B'
      * }</pre>
      *
      * @implNote Java rounds toward zero when converting a {@code float} to an
-     * {@code int}, so this method adds 0.5 before the type conversion so that
-     * the number ends up rounded to the nearest integer.
+     * {@code int}, so this method adds 0.5 before the type conversion to round
+     * to the nearest integer.
      *
      * @param source the source integer buffer in ARGB32 format
      * @param target the target byte buffer in Y8 format
@@ -176,8 +184,10 @@ class FramebufferY8 extends Framebuffer {
                 break;
             }
             default:
-                logger.severe("Unsupported color depth: {0} bpp", bitDepth);
-                throw new IllegalArgumentException();
+                String msg = MessageFormat.format("byteDepth={0}", byteDepth);
+                logger.severe(msg);
+                throw new IllegalStateException(msg);
+
         }
     }
 
@@ -234,8 +244,16 @@ class FramebufferY8 extends Framebuffer {
                 break;
             }
             default:
-                logger.severe("Unsupported color depth: {0} bpp", bitDepth);
-                throw new IllegalArgumentException();
+                String msg = MessageFormat.format("byteDepth={0}", byteDepth);
+                logger.severe(msg);
+                throw new IllegalStateException(msg);
+
         }
+    }
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("{0}[width={1} height={2} depth={3} bb={4}]",
+                getClass().getName(), width, height, bitDepth, bb);
     }
 }
