@@ -48,8 +48,6 @@ public class FramebufferY8Test {
      * An image with all 16,777,216 colors of the 24-bit RGB palette in a 4096 ×
      * 4096 bitmap. The image was created by Naruto_64 and published on
      * Wikimedia Commons under the Creative Commons "CC BY-SA 4.0" license.
-     * <p>
-     * <img width="256" height="256" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/16777216colors_diffpatt.png/256px-16777216colors_diffpatt.png"/></p>
      *
      * @see
      * <a href="https://commons.wikimedia.org/wiki/File:16777216colors_diffpatt.png">

@@ -39,13 +39,13 @@ public class FramebufferY8SuperShim extends Framebuffer {
      * Creates a new {@code FramebufferY8SuperShim}.
      *
      * @param bb the 32-bit composition buffer
-     * @param width the width of the buffer in pixels
-     * @param height the height of the buffer in pixels
-     * @param depth the color depth of the target channel or buffer, in bits per
+     * @param width the width of the composition buffer in pixels
+     * @param height the height of the composition buffer in pixels
+     * @param depth the color depth of the target channel or buffer in bits per
      * pixel
-     * @param clear {@code true} to clear the buffer on the first upload of each
-     * frame unless that upload already overwrites the entire buffer; otherwise
-     * {@code false}
+     * @param clear {@code true} to clear the composition buffer on the first
+     * upload of each frame unless that upload already overwrites the entire
+     * buffer; otherwise {@code false}
      */
     public FramebufferY8SuperShim(ByteBuffer bb, int width, int height, int depth, boolean clear) {
         super(bb, width, height, depth, clear);

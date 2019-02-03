@@ -92,11 +92,10 @@ class EPDFrameBuffer {
 
     /**
      * Creates a new {@code EPDFrameBuffer} for the given frame buffer device.
-     * <p>
      * The geometry of the Linux frame buffer is shown below for various color
      * depths and rotations on a sample system, as printed by the <i>fbset</i>
-     * command. The first set are for landscape mode, while the second set are
-     * for portrait.</p>
+     * command. The first three are for landscape mode, while the last three are
+     * for portrait.
      * <pre>{@code
      * geometry 800 600 800 640 32 (line length: 3200)
      * geometry 800 600 800 1280 16 (line length: 1600)
@@ -111,9 +110,9 @@ class EPDFrameBuffer {
      * requires that the width be set to {@link #xresVirtual} even though only
      * the first {@link #xres} pixels of each row are visible. The EPDC driver
      * supports panning only in the y-direction, so it is not possible to center
-     * the visible resolution horizontally when in portrait mode by moving it
-     * four pixels to the right. The JavaFX application should be left-aligned
-     * and ignore the extra eight pixels on the right of its screen.
+     * the visible resolution horizontally when these values differ. The JavaFX
+     * application should be left-aligned in this case and ignore the few extra
+     * pixels on the right of its screen.
      *
      * @param fbPath the frame buffer device path, such as <i>/dev/fb0</i>
      * @throws IOException if an error occurs when opening the frame buffer
@@ -193,8 +192,8 @@ class EPDFrameBuffer {
         byteOffset = (xoffset + yoffset * xresVirtual) * bytesPerPixel;
 
         /*
-         * Allocates objects for reuse to avoid creating their direct byte
-         * buffers outside of the Java heap on each display update.
+         * Allocates objects for reuse to avoid creating new direct byte buffers
+         * outside of the Java heap on each display update.
          */
         updateData = new MxcfbUpdateData();
         syncUpdate = createDefaultUpdate(xres, yres);
@@ -343,10 +342,10 @@ class EPDFrameBuffer {
      * the configuration options used to build the kernel in a file under
      * <i>/proc</i> or <i>/boot</i>, such as <i>/proc/config.gz</i>.</p>
      *
-     * @param mode the automatic update mode as one of the following:
+     * @param mode the automatic update mode, one of:
      * <ul>
-     * <li>{@link EPDSystem#AUTO_UPDATE_MODE_AUTOMATIC_MODE}</li>
      * <li>{@link EPDSystem#AUTO_UPDATE_MODE_REGION_MODE}</li>
+     * <li>{@link EPDSystem#AUTO_UPDATE_MODE_AUTOMATIC_MODE}</li>
      * </ul>
      */
     private void setAutoUpdateMode(int mode) {
@@ -363,8 +362,8 @@ class EPDFrameBuffer {
      *
      * @param updateMode the update mode, one of:
      * <ul>
-     * <li>{@link EPDSystem#UPDATE_MODE_FULL}</li>
      * <li>{@link EPDSystem#UPDATE_MODE_PARTIAL}</li>
+     * <li>{@link EPDSystem#UPDATE_MODE_FULL}</li>
      * </ul>
      * @param waveformMode the waveform mode, one of:
      * <ul>
@@ -373,6 +372,7 @@ class EPDFrameBuffer {
      * <li>{@link EPDSystem#WAVEFORM_MODE_GC16}</li>
      * <li>{@link EPDSystem#WAVEFORM_MODE_GC4}</li>
      * <li>{@link EPDSystem#WAVEFORM_MODE_A2}</li>
+     * <li>{@link EPDSystem#WAVEFORM_MODE_AUTO}</li>
      * </ul>
      * @param flags a bit mask composed of the following flag values:
      * <ul>
@@ -434,7 +434,7 @@ class EPDFrameBuffer {
      * Blocks and waits for a previous update request to complete.
      *
      * @param marker the marker to identify a particular update, returned by
-     * {@link #sendUpdate(MxcfbUpdateData, int) sendUpdate}
+     * {@link #sendUpdate(MxcfbUpdateData, int)}
      */
     private void waitForUpdateComplete(int marker) {
         /*
@@ -506,22 +506,6 @@ class EPDFrameBuffer {
     /**
      * Initializes the EPDC frame buffer device, setting the update scheme to
      * {@link EPDSystem#UPDATE_SCHEME_SNAPSHOT}.
-     *
-     * @implNote In the following notes, <i>synchronization</i> means waiting
-     * for the previous update to complete before sending the next update.
-     * <p>
-     * Regarding the update scheme, only the Snapshot scheme can be used with or
-     * without synchronization while avoiding problems with either the frame
-     * rate or the integrity of the frames displayed on screen.</p>
-     * <p>
-     * Without synchronization, if update collisions occur, the Queue scheme
-     * drops frames, the Queue and Merge scheme combines frames, and the
-     * Snapshot scheme can reorder frames or even run out of internal buffers,
-     * depending on the frame and collision rates. With synchronization, where
-     * update collisions cannot occur, the Queue and Merge scheme is the same as
-     * the Queue scheme, the Queue scheme must copy each frame from an
-     * off-screen composition buffer, but the Snapshot scheme can use a 32-bit
-     * Linux frame buffer directly, avoiding the extra copying step.</p>
      */
     void init() {
         setWaveformModes(EPDSystem.WAVEFORM_MODE_INIT, EPDSystem.WAVEFORM_MODE_DU,
@@ -535,8 +519,8 @@ class EPDFrameBuffer {
 
     /**
      * Clears the display panel. The visible frame buffer should be cleared with
-     * zeros when called. This method sends two direct updates, all black
-     * followed by all white, to refresh the screen and clear any ghosting
+     * zeros when called. This method sends two direct updates (all black
+     * followed by all white) to refresh the screen and clear any ghosting
      * effects, and returns when both updates are complete.
      * <p>
      * <strong>This method is not thread safe</strong>, but it is invoked only

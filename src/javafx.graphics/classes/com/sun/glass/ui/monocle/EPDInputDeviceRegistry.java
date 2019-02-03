@@ -32,32 +32,31 @@ import java.util.Map;
 
 /**
  * Maintains an observable set of input devices. This class is responsible for
- * detecting the attached input devices and generating their input events.
- * <p>
- * Run the following commands as <i>root</i> to list the properties of the
- * keypad (event0) and touch screen (event1) input devices on the system:</p>
+ * detecting the attached input devices and generating their input events. Run
+ * the following commands as <i>root</i> to list the properties of the keypad
+ * (event0) and touch screen (event1) input devices on the system:
  * <pre>{@code
  * # udevadm info -q all -n /dev/input/event0
  * # udevadm info -q all -n /dev/input/event1
  * }</pre>
  *
- * @implNote {@code EPDPlatform} creates an instance of this subclass instead of
- * a {@code LinuxInputDeviceRegistry} because this class overrides two of its
+ * @implNote {@code EPDPlatform} creates an instance of this class instead of
+ * {@code LinuxInputDeviceRegistry} because this class replaces two of its
  * methods.
  * <p>
- * It overrides the {@link #createDevice} method to work around bug JDK-8201568
- * by opening the device before creating its {@code LinuxInputDevice}. It
- * overrides the {@link #addDeviceInternal} method to work around older versions
- * of <i>udev</i>, such as version 142, which do not provide the property
- * ID_INPUT_TOUCHSCREEN=1 for the touch screen device.
+ * It replaces the {@link #createDevice} method to work around bug JDK-8201568
+ * by opening the device before creating its {@code LinuxInputDevice}. It also
+ * replaces the {@link #addDeviceInternal} method to work around older versions
+ * of <i>udev</i>, such as version 142, which do not provide the
+ * ID_INPUT_TOUCHSCREEN=1 property for the touch screen device.
  * {@link LinuxInputDevice#isTouch} requires that property and value; otherwise
  * the method returns {@code false}, and the touch screen is mistakenly assigned
  * a keyboard input processor. Newer versions of <i>udev</i>, such as version
  * 204, provide the correct property and value.</p>
  * <p>
  * Therefore, once JDK-8201568 is fixed and the old version of <i>udev</i> is no
- * longer in use, this entire class can be removed and replaced by its
- * superclass.</p>
+ * longer in use, this entire class can be removed and replaced by
+ * {@code LinuxInputDeviceRegistry}.</p>
  */
 class EPDInputDeviceRegistry extends InputDeviceRegistry {
 
@@ -162,8 +161,8 @@ class EPDInputDeviceRegistry extends InputDeviceRegistry {
      * for processing only after receiving the EV_SYN event terminator (see the
      * {@link LinuxEventBuffer#put} method). The events from this device,
      * therefore, are never delivered to the JavaFX application. The "gpio-keys"
-     * device driver on more recent systems, though, correctly generates the
-     * EV_SYN event terminator for keypad events.
+     * keypad device driver on more recent systems, though, correctly generates
+     * the EV_SYN event terminator.
      *
      * @param device the Linux input device
      * @param name the device name, such as <i>/dev/input/event0</i>

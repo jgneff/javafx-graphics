@@ -39,8 +39,8 @@ import java.text.MessageFormat;
  * Provides a buffer for composing JavaFX scenes. This class is given a 32-bit
  * composition buffer that is either the Linux frame buffer itself or an
  * off-screen byte buffer. It can write the contents of this buffer to a target
- * byte channel or byte buffer in one of three pixel formats: 32-bit ARGB32
- * color, 16-bit RGB565 color, or 8-bit Y8 grayscale.
+ * channel, or copy them to a buffer, in one of three pixel formats: 32-bit
+ * ARGB32 color, 16-bit RGB565 color, or 8-bit Y8 grayscale.
  */
 class FramebufferY8 extends Framebuffer {
 
@@ -66,7 +66,7 @@ class FramebufferY8 extends Framebuffer {
      * @param bb the 32-bit composition buffer
      * @param width the width of the composition buffer in pixels
      * @param height the height of the composition buffer in pixels
-     * @param depth the color depth of the target channel or buffer, in bits per
+     * @param depth the color depth of the target channel or buffer in bits per
      * pixel
      * @param clear {@code true} to clear the composition buffer on the first
      * upload of each frame unless that upload already overwrites the entire
@@ -116,7 +116,7 @@ class FramebufferY8 extends Framebuffer {
 
     /**
      * Copies the next 32-bit ARGB32 pixel to a short buffer with 16-bit RGB565
-     * pixels.
+     * pixels. This method truncates the low-order bits of each color component.
      *
      * @param source the source integer buffer in ARGB32 format
      * @param target the target short buffer in RGB565 format

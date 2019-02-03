@@ -35,8 +35,8 @@ import java.text.MessageFormat;
 
 /**
  * A factory object for creating the native platform on a Linux system with an
- * electrophoretic display, also called an e-paper display. These types of
- * displays are found on e-readers, such as the Amazon Kindle and Rakuten Kobo.
+ * electrophoretic display, also called an e-paper display, found on e-readers
+ * such as the Amazon Kindle and Rakuten Kobo.
  */
 class EPDPlatformFactory extends NativePlatformFactory {
 

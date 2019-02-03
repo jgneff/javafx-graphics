@@ -45,7 +45,7 @@ class EPDSystem {
 
     /**
      * The value for {@link FbVarScreenInfo#setRotate} to set the frame buffer
-     * rotation to un-rotated (landscape mode).
+     * rotation to un-rotated (upright landscape mode).
      */
     static final int FB_ROTATE_UR = 0;
 
@@ -63,7 +63,7 @@ class EPDSystem {
 
     /**
      * The value for {@link FbVarScreenInfo#setRotate} to set the frame buffer
-     * rotation to 90-degrees counter-clockwise (portrait mode).
+     * rotation to 90-degrees counter-clockwise (upright portrait mode).
      */
     static final int FB_ROTATE_CCW = 3;
 
@@ -107,7 +107,7 @@ class EPDSystem {
      * {@link #MXCFB_SEND_UPDATE}, they are added to the queue and processed in
      * order as the EPDC hardware resources become available. The frame buffer
      * contents processed and displayed, therefore, may not reflect what was
-     * present in the frame buffer when the update was sent.
+     * present in the frame buffer when the update was submitted.
      */
     static final int UPDATE_SCHEME_QUEUE = 1;
 
@@ -357,7 +357,7 @@ class EPDSystem {
      * @param fd an open file descriptor
      * @param request a device-dependent request code
      * @param value the integer value
-     * @return 0 if successful; otherwise -1 and {@code errno} is set
+     * @return 0 if successful; otherwise -1 with {@code errno} set
      * appropriately
      */
     native int ioctl(long fd, int request, int value);

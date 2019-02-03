@@ -64,7 +64,7 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for the frame buffer color depth.
+     * Tests the EPD system property for the frame buffer color depth.
      */
     @Test
     public void testBitsPerPixel() {
@@ -86,7 +86,7 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for the frame buffer rotation.
+     * Tests the EPD system property for the frame buffer rotation.
      */
     @Test
     public void testRotate() {
@@ -112,9 +112,9 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for whether the 8-bit pixels of the
-     * frame buffer are inverted. This property is ignored if the frame buffer
-     * is not in the Y8 pixel format.
+     * Tests the EPD system property for whether the 8-bit pixels of the frame
+     * buffer are inverted. This property is ignored if the frame buffer is not
+     * in the Y8 pixel format.
      */
     @Test
     public void testY8Inverted() {
@@ -138,8 +138,8 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for whether to wait for the
-     * previous update to complete before sending the next update.
+     * Tests the EPD system property for whether to wait for the previous update
+     * to complete before sending the next update.
      */
     @Test
     public void testNoWait() {
@@ -153,7 +153,7 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for the update waveform mode.
+     * Tests the EPD system property for the update waveform mode.
      */
     @Test
     public void testWaveformMode() {
@@ -183,7 +183,7 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for whether to invert the pixels in
+     * Tests the EPD system property for whether to invert the pixels in
      * updates.
      */
     @Test
@@ -198,8 +198,8 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for whether to convert all pixels
-     * to monochrome (black or white) in updates.
+     * Tests the EPD system property for whether to convert all pixels to
+     * monochrome (black or white) in updates.
      */
     @Test
     public void testFlagForceMonochrome() {
@@ -213,8 +213,8 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for whether to dither the 8-bit
-     * grayscale contents of the frame buffer to 1-bit black and white.
+     * Tests the EPD system property for whether to dither the 8-bit grayscale
+     * contents of the frame buffer to 1-bit black and white.
      */
     @Test
     public void testFlagUseDitheringY1() {
@@ -228,8 +228,8 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system property for whether to dither the 8-bit
-     * grayscale contents of the frame buffer to 4-bit grayscale.
+     * Tests the EPD system property for whether to dither the 8-bit grayscale
+     * contents of the frame buffer to 4-bit grayscale.
      */
     @Test
     public void testFlagUseDitheringY4() {
@@ -243,7 +243,7 @@ public class EPDSettingsTest {
     }
 
     /**
-     * Tests setting the EPD system properties to enable all EPD update flags.
+     * Tests the EPD system properties to enable all EPD update flags.
      */
     @Test
     public void testAllFlags() {
