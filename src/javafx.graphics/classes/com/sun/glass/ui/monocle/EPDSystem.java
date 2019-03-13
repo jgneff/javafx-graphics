@@ -452,7 +452,7 @@ class EPDSystem {
         @Override
         public String toString() {
             return MessageFormat.format(
-                    "{0}[init={1} du={2} gc4={3} gc8={4} gc16={5} gc32={6}]",
+                    "{0}[mode_init={1} mode_du={2} mode_gc4={3} mode_gc8={4} mode_gc16={5} mode_gc32={6}]",
                     getClass().getName(), getModeInit(p), getModeDu(p), getModeGc4(p),
                     getModeGc8(p), getModeGc16(p), getModeGc32(p));
         }
@@ -552,19 +552,19 @@ class EPDSystem {
             return data.get(ALT_BUFFER_DATA_HEIGHT);
         }
 
-        int getAltBufferDataUpdateRegionTop(long p) {
+        int getAltBufferDataAltUpdateRegionTop(long p) {
             return data.get(ALT_BUFFER_DATA_ALT_UPDATE_REGION_TOP);
         }
 
-        int getAltBufferDataUpdateRegionLeft(long p) {
+        int getAltBufferDataAltUpdateRegionLeft(long p) {
             return data.get(ALT_BUFFER_DATA_ALT_UPDATE_REGION_LEFT);
         }
 
-        int getAltBufferDataUpdateRegionWidth(long p) {
+        int getAltBufferDataAltUpdateRegionWidth(long p) {
             return data.get(ALT_BUFFER_DATA_ALT_UPDATE_REGION_WIDTH);
         }
 
-        int getAltBufferDataUpdateRegionHeight(long p) {
+        int getAltBufferDataAltUpdateRegionHeight(long p) {
             return data.get(ALT_BUFFER_DATA_ALT_UPDATE_REGION_HEIGHT);
         }
 
@@ -596,23 +596,26 @@ class EPDSystem {
         }
 
         void setAltBufferData(long p, long virtAddr, long physAddr, int width, int height,
-                int regionTop, int regionLeft, int regionWidth, int regionHeight) {
+                int altUpdateRegionTop, int altUpdateRegionLeft, int altUpdateRegionWidth, int altUpdateRegionHeight) {
             data.put(ALT_BUFFER_DATA_VIRT_ADDR, (int) virtAddr);
             data.put(ALT_BUFFER_DATA_PHYS_ADDR, (int) physAddr);
             data.put(ALT_BUFFER_DATA_WIDTH, width);
             data.put(ALT_BUFFER_DATA_HEIGHT, height);
-            data.put(ALT_BUFFER_DATA_ALT_UPDATE_REGION_TOP, regionTop);
-            data.put(ALT_BUFFER_DATA_ALT_UPDATE_REGION_LEFT, regionLeft);
-            data.put(ALT_BUFFER_DATA_ALT_UPDATE_REGION_WIDTH, regionWidth);
-            data.put(ALT_BUFFER_DATA_ALT_UPDATE_REGION_HEIGHT, regionHeight);
+            data.put(ALT_BUFFER_DATA_ALT_UPDATE_REGION_TOP, altUpdateRegionTop);
+            data.put(ALT_BUFFER_DATA_ALT_UPDATE_REGION_LEFT, altUpdateRegionLeft);
+            data.put(ALT_BUFFER_DATA_ALT_UPDATE_REGION_WIDTH, altUpdateRegionWidth);
+            data.put(ALT_BUFFER_DATA_ALT_UPDATE_REGION_HEIGHT, altUpdateRegionHeight);
         }
 
         @Override
         public String toString() {
-            return MessageFormat.format("{0}[top={1} left={2} width={3} height={4}"
-                    + "waveforMode={5} updateMode={6} updateMarker={7} temp={8} flags={9}"
-                    + "altVirtAddr={10} altPhysAddr={11} altWidth={12} altHeight={13}"
-                    + "altRegionTop={14} altRegionLeft={15} altRegionWidth={16} altRegionHeight={17}]",
+            return MessageFormat.format(
+                    "{0}[update_region.top={1} update_region.left={2} update_region.width={3} update_region.height={4}"
+                    + " waveform_mode={5} update_mode={6} update_marker={7} temp={8} flags=0x{9}"
+                    + " alt_buffer_data.virt_addr=0x{10} alt_buffer_data.phys_addr=0x{11}"
+                    + " alt_buffer_data.width={12} alt_buffer_data.height={13}"
+                    + " alt_buffer_data.alt_update_region.top={14} alt_buffer_data.alt_update_region.left={15}"
+                    + " alt_buffer_data.alt_update_region.width={16} alt_buffer_data.alt_update_region.height={17}]",
                     getClass().getName(),
                     Integer.toUnsignedLong(getUpdateRegionTop(p)),
                     Integer.toUnsignedLong(getUpdateRegionLeft(p)),
@@ -627,10 +630,10 @@ class EPDSystem {
                     Long.toHexString(getAltBufferDataPhysAddr(p)),
                     Integer.toUnsignedLong(getAltBufferDataWidth(p)),
                     Integer.toUnsignedLong(getAltBufferDataHeight(p)),
-                    Integer.toUnsignedLong(getAltBufferDataUpdateRegionTop(p)),
-                    Integer.toUnsignedLong(getAltBufferDataUpdateRegionLeft(p)),
-                    Integer.toUnsignedLong(getAltBufferDataUpdateRegionWidth(p)),
-                    Integer.toUnsignedLong(getAltBufferDataUpdateRegionHeight(p)));
+                    Integer.toUnsignedLong(getAltBufferDataAltUpdateRegionTop(p)),
+                    Integer.toUnsignedLong(getAltBufferDataAltUpdateRegionLeft(p)),
+                    Integer.toUnsignedLong(getAltBufferDataAltUpdateRegionWidth(p)),
+                    Integer.toUnsignedLong(getAltBufferDataAltUpdateRegionHeight(p)));
         }
     }
 
