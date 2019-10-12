@@ -5,6 +5,7 @@
 /nbproject/*
 
 # Files required by NetBeans
+!/nbproject/licenseheader.txt
 !/nbproject/project.properties
 !/nbproject/project.xml
 
