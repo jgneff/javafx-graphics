@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.java.j2semodule</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/j2se-modular-project/1">
-            <name>monocle-epd</name>
+            <name>javafx-graphics</name>
             <source-roots>
                 <root id="src.dir" pathref="src.dir.path"/>
             </source-roots>

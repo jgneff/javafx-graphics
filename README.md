@@ -1,10 +1,10 @@
-# Monocle EPD
+# JavaFX Graphics
 
 This repository is a NetBeans project that contains the JavaFX Graphics module and uses Apache Ant to build its modular JAR file (*javafx.graphics.jar*). I use this project to edit, compile, and test my changes to the [Monocle EPD](https://github.com/javafxports/openjdk-jfx/issues/339) platform before copying the modified files into my fork of the official [JavaFX repository](https://github.com/openjdk/jfx).
 
 ## Project Settings
 
-This project's Java Platform is the default platform, which I define as [OpenJDK 13](https://jdk.java.net/13/) for my installation of [NetBeans 11.2](https://snapcraft.io/netbeans). You can set up the project's dependency on the JavaFX SDK as described below.
+The Java Platform for this project is the default platform, which is [OpenJDK 13.0.1](https://jdk.java.net/13/) for my installation of [NetBeans 11.2](https://snapcraft.io/netbeans). You can set up the project's dependency on the JavaFX SDK as described below.
 
 ### JavaFX SDK
 
@@ -44,7 +44,7 @@ Those steps should resolve any problems with the project in NetBeans. If not, ch
 
 ### Modulepath
 
-Add the JavaFX modular JAR files to the project's Compile Modulepath. To do so, navigate to the Properties > Libraries > Compile tab, click the "+" sign to the right of **Modulepath**, select "Add JAR/Folder," and add the following six files:
+Add the JavaFX modular JAR files to the project's Compile Modulepath. To do so, navigate to the Properties > Libraries > Compile tab, click the "+" sign to the right of Modulepath, select "Add JAR/Folder," and add the following six files:
 
 ```
 ~/lib/javafx-sdk-14/lib/javafx.base.jar
