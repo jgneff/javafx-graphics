@@ -381,11 +381,11 @@ class EPDSystem {
             return BYTES;
         }
 
-        int getInteger(long p) {
+        int get(long p) {
             return data.get(VALUE);
         }
 
-        void setInteger(long p, int value) {
+        void set(long p, int value) {
             data.put(VALUE, value);
         }
     }

@@ -497,7 +497,7 @@ class EPDFrameBuffer {
             logger.severe("Failed getting power-down delay: {0} ({1})",
                     system.getErrorMessage(), system.errno());
         }
-        return integer.getInteger(integer.p);
+        return integer.get(integer.p);
     }
 
     /**
@@ -596,7 +596,7 @@ class EPDFrameBuffer {
      * @implNote The virtual y-resolution reported by the frame buffer device
      * can be wrong, as shown by the following example on the Kobo Glo HD Model
      * N437 which reports 2,304 pixels when the correct value is 1,152
-     * (6,782,976 / 5888). Therefore, this method cannot use the frame buffer
+     * (6,782,976 / 5,888). Therefore, this method cannot use the frame buffer
      * virtual resolution to calculate its size.
      *
      * <pre>{@code
