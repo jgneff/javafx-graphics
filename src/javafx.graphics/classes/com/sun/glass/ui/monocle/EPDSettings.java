@@ -38,14 +38,89 @@ import java.util.HashMap;
  */
 class EPDSettings {
 
+    /**
+     * Sets the frame buffer color depth and pixel format: 8 for 8-bit grayscale
+     * in the Y8 pixel format, 16 for 16-bit color in the RGB565 pixel format,
+     * or 32 for 32-bit color in the ARGB32 pixel format. The default is 32.
+     * <p>
+     * Using the 32-bit format allows JavaFX to render directly into the Linux
+     * frame buffer and avoid the step of copying and converting each pixel from
+     * an off-screen composition buffer.</p>
+     */
     private static final String BITS_PER_PIXEL = "monocle.epd.bitsPerPixel";
+
+    /**
+     * Sets the frame buffer rotation: 0 for unrotated (UR), 1 for 90 degrees
+     * clockwise (CW), 2 for 180 degrees upside-down (UD), and 3 for 90 degrees
+     * counter-clockwise (CCW). The default is 0.
+     * <p>
+     * The unrotated and upside-down settings are in landscape mode, while the
+     * clockwise and counter-clockwise settings are in portrait.</p>
+     */
     private static final String ROTATE = "monocle.epd.rotate";
+
+    /**
+     * Sets an indicator for the frame buffer grayscale value: {@code true} to
+     * invert the pixels of all updates when using 8-bit grayscale in the Y8
+     * pixel format; otherwise {@code false}. The default is {@code false}.
+     * <p>
+     * The value is ignored when the frame buffer is not set to 8-bit grayscale
+     * in the Y8 pixel format.</p>
+     */
     private static final String Y8_INVERTED = "monocle.epd.y8inverted";
+
+    /**
+     * Indicates whether to wait for the previous update to complete before
+     * sending the next update: {@code true} to avoid waiting and send updates
+     * as quickly as possible; otherwise {@code false}. The default is
+     * {@code false}.
+     * <p>
+     * The number of outstanding updates is limited by the device controller to
+     * either 16 or 64 concurrent non-colliding updates, depending on the model.
+     * A value of {@code true} may result in errors if the maximum number of
+     * concurrent non-colliding updates is exceeded.</p>
+     */
     private static final String NO_WAIT = "monocle.epd.noWait";
+
+    /**
+     * Sets the waveform mode used for updates: 1 for black-and-white direct
+     * update (DU), 2 for 16 levels of gray (GC16), 3 for 4 levels of gray
+     * (GC4), 4 for pure black-and-white animation (A2), and 257 for the
+     * automatic selection of waveform mode based on the number of gray levels
+     * in the update (AUTO). The default is 257.
+     * <p>
+     * Automatic selection chooses one of 1 (DU), 2 (GC16), or 3 (GC4). If the
+     * waveform mode is set to 2 (GC16), it may be upgraded to a compatible but
+     * optimized mode internal to the driver, if available.</p>
+     */
     private static final String WAVEFORM_MODE = "monocle.epd.waveformMode";
+
+    /**
+     * Sets the update flag for pixel inversion: {@code true} to invert the
+     * pixels of each update; otherwise {@code false}. The default is
+     * {@code false}.
+     */
     private static final String FLAG_ENABLE_INVERSION = "monocle.epd.enableInversion";
+
+    /**
+     * Sets the update flag for monochrome conversion: {@code true} to convert
+     * the pixels of each update to pure black and white using a 50-percent
+     * threshold; otherwise {@code false}. The default is {@code false}.
+     */
     private static final String FLAG_FORCE_MONOCHROME = "monocle.epd.forceMonochrome";
+
+    /**
+     * Sets the update flag for 1-bit dithering: {@code true} to dither each
+     * update in an 8-bit Y8 frame buffer to 1-bit black and white, if
+     * available; otherwise {@code false}. The default is {@code false}.
+     */
     private static final String FLAG_USE_DITHERING_Y1 = "monocle.epd.useDitheringY1";
+
+    /**
+     * Sets the update flag for 4-bit dithering: {@code true} to dither each
+     * update in an 8-bit Y8 frame buffer to 4-bit grayscale, if available;
+     * otherwise {@code false}. The default is {@code false}.
+     */
     private static final String FLAG_USE_DITHERING_Y4 = "monocle.epd.useDitheringY4";
 
     private static final String[] EPD_PROPERTIES = {
