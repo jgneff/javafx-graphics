@@ -123,6 +123,15 @@ class EPDSettings {
      */
     private static final String FLAG_USE_DITHERING_Y4 = "monocle.epd.useDitheringY4";
 
+    /**
+     * Indicates whether to work around a bug on devices, such as the Kobo Clara
+     * HD Model N249, that require a screen width equal to the visible
+     * x-resolution, instead of the normal virtual x-resolution, when using an
+     * unrotated, uninverted, 8-bit frame buffer: {@code true} to work around
+     * the bug; otherwise {@code false}.
+     */
+    private static final String MODEL_N249 = "monocle.epd.modelN249";
+
     private static final String[] EPD_PROPERTIES = {
         BITS_PER_PIXEL,
         ROTATE,
@@ -132,7 +141,8 @@ class EPDSettings {
         FLAG_ENABLE_INVERSION,
         FLAG_FORCE_MONOCHROME,
         FLAG_USE_DITHERING_Y1,
-        FLAG_USE_DITHERING_Y4
+        FLAG_USE_DITHERING_Y4,
+        MODEL_N249
     };
 
     private static final int BITS_PER_PIXEL_DEFAULT = Integer.SIZE;
@@ -178,6 +188,7 @@ class EPDSettings {
     private final boolean flagForceMonochrome;
     private final boolean flagUseDitheringY1;
     private final boolean flagUseDitheringY4;
+    private final boolean modelN249;
 
     final int bitsPerPixel;
     final int rotate;
@@ -185,6 +196,7 @@ class EPDSettings {
     final int waveformMode;
     final int grayscale;
     final int flags;
+    final boolean widthVisible;
 
     /**
      * Creates a new EPDSettings, capturing the current values of the EPD system
@@ -192,7 +204,7 @@ class EPDSettings {
      */
     private EPDSettings() {
         if (logger.isLoggable(Level.FINE)) {
-            var map = new HashMap();
+            HashMap<String, String> map = new HashMap<>();
             for (String key : EPD_PROPERTIES) {
                 String value = System.getProperty(key);
                 if (value != null) {
@@ -226,6 +238,10 @@ class EPDSettings {
                 | (flagForceMonochrome ? EPDSystem.EPDC_FLAG_FORCE_MONOCHROME : 0)
                 | (flagUseDitheringY1 ? EPDSystem.EPDC_FLAG_USE_DITHERING_Y1 : 0)
                 | (flagUseDitheringY4 ? EPDSystem.EPDC_FLAG_USE_DITHERING_Y4 : 0);
+
+        modelN249 = Boolean.getBoolean(MODEL_N249);
+        widthVisible = modelN249 && rotate == EPDSystem.FB_ROTATE_UR
+                && grayscale == EPDSystem.GRAYSCALE_8BIT;
     }
 
     /**
@@ -254,8 +270,10 @@ class EPDSettings {
     @Override
     public String toString() {
         return MessageFormat.format("{0}[bitsPerPixel={1} rotate={2} "
-                + "noWait={3} waveformMode={4} grayscale={5} flags=0x{6}]",
+                + "noWait={3} waveformMode={4} grayscale={5} flags=0x{6} "
+                + "widthVisible={7}]",
                 getClass().getName(), bitsPerPixel, rotate,
-                noWait, waveformMode, grayscale, Integer.toHexString(flags));
+                noWait, waveformMode, grayscale, Integer.toHexString(flags),
+                widthVisible);
     }
 }

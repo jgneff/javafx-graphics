@@ -672,21 +672,18 @@ class EPDFrameBuffer {
     }
 
     /**
-     * Gets the virtual horizontal resolution of the frame buffer. See the notes
-     * for the {@linkplain EPDFrameBuffer#EPDFrameBuffer constructor} above.
+     * Gets the width in pixels of the frame buffer. See the notes for the
+     * {@linkplain EPDFrameBuffer#EPDFrameBuffer constructor} above.
      *
-     * @implNote When using an 8-bit frame buffer, set by the system property
-     * {@code monocle.epd.bitsPerPixel=8}, the Kobo Touch Models N905B and N905C
-     * and the Kobo Glo HD Model N437 work only when this method returns
-     * {@code xresVirtual}, while the Kobo Clara HD Model N249 works only when
-     * this method returns {@code xres}.
-     * <p>
-     * TODO: Make 8-bit frame buffers work for all devices.</p>
+     * @implNote When using an unrotated, uninverted, 8-bit frame buffer, the
+     * Kobo Clara HD Model N249 works only when this method returns the visible
+     * x-resolution ({@code xres}) instead of the normal virtual x-resolution
+     * ({@code xresVirtual}).
      *
-     * @return the virtual width in pixels
+     * @return the width in pixels
      */
     int getWidth() {
-        return xresVirtual;
+        return settings.widthVisible ? xres : xresVirtual;
     }
 
     /**
