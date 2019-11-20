@@ -676,14 +676,14 @@ class EPDFrameBuffer {
      * {@linkplain EPDFrameBuffer#EPDFrameBuffer constructor} above.
      *
      * @implNote When using an unrotated, uninverted, 8-bit frame buffer, the
-     * Kobo Clara HD Model N249 works only when this method returns the visible
-     * x-resolution ({@code xres}) instead of the normal virtual x-resolution
-     * ({@code xresVirtual}).
+     * Kobo Clara HD (Model N249) works only when this method returns the
+     * visible x-resolution ({@code xres}) instead of the normal virtual
+     * x-resolution ({@code xresVirtual}).
      *
      * @return the width in pixels
      */
     int getWidth() {
-        return settings.widthVisible ? xres : xresVirtual;
+        return settings.getWidthVisible ? xres : xresVirtual;
     }
 
     /**

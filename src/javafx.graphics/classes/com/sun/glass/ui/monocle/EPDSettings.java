@@ -46,6 +46,9 @@ class EPDSettings {
      * Using the 32-bit format allows JavaFX to render directly into the Linux
      * frame buffer and avoid the step of copying and converting each pixel from
      * an off-screen composition buffer.</p>
+     *
+     * @implNote Corresponds to the {@code bits_per_pixel} field of
+     * {@code fb_var_screeninfo} in <i>linux/fb.h</i>.
      */
     private static final String BITS_PER_PIXEL = "monocle.epd.bitsPerPixel";
 
@@ -56,6 +59,9 @@ class EPDSettings {
      * <p>
      * The unrotated and upside-down settings are in landscape mode, while the
      * clockwise and counter-clockwise settings are in portrait.</p>
+     *
+     * @implNote Corresponds to the {@code rotate} field of
+     * {@code fb_var_screeninfo} in <i>linux/fb.h</i>.
      */
     private static final String ROTATE = "monocle.epd.rotate";
 
@@ -66,6 +72,9 @@ class EPDSettings {
      * <p>
      * The value is ignored when the frame buffer is not set to 8-bit grayscale
      * in the Y8 pixel format.</p>
+     *
+     * @implNote Corresponds to the {@code GRAYSCALE_8BIT_INVERTED} constant in
+     * <i>linux/mxcfb.h</i>.
      */
     private static final String Y8_INVERTED = "monocle.epd.y8inverted";
 
@@ -79,6 +88,9 @@ class EPDSettings {
      * either 16 or 64 concurrent non-colliding updates, depending on the model.
      * A value of {@code true} may result in errors if the maximum number of
      * concurrent non-colliding updates is exceeded.</p>
+     *
+     * @implNote Corresponds to the IOCTL call constant
+     * {@code MXCFB_WAIT_FOR_UPDATE_COMPLETE} in <i>linux/mxcfb.h</i>.
      */
     private static final String NO_WAIT = "monocle.epd.noWait";
 
@@ -92,6 +104,9 @@ class EPDSettings {
      * Automatic selection chooses one of 1 (DU), 2 (GC16), or 3 (GC4). If the
      * waveform mode is set to 2 (GC16), it may be upgraded to a compatible but
      * optimized mode internal to the driver, if available.</p>
+     *
+     * @implNote Corresponds to the {@code waveform_mode} field of
+     * {@code mxcfb_update_data} in <i>linux/mxcfb.h</i>.
      */
     private static final String WAVEFORM_MODE = "monocle.epd.waveformMode";
 
@@ -99,6 +114,9 @@ class EPDSettings {
      * Sets the update flag for pixel inversion: {@code true} to invert the
      * pixels of each update; otherwise {@code false}. The default is
      * {@code false}.
+     *
+     * @implNote Corresponds to the {@code EPDC_FLAG_ENABLE_INVERSION} constant
+     * in <i>linux/mxcfb.h</i>.
      */
     private static final String FLAG_ENABLE_INVERSION = "monocle.epd.enableInversion";
 
@@ -106,6 +124,9 @@ class EPDSettings {
      * Sets the update flag for monochrome conversion: {@code true} to convert
      * the pixels of each update to pure black and white using a 50-percent
      * threshold; otherwise {@code false}. The default is {@code false}.
+     *
+     * @implNote Corresponds to the {@code EPDC_FLAG_FORCE_MONOCHROME} constant
+     * in <i>linux/mxcfb.h</i>.
      */
     private static final String FLAG_FORCE_MONOCHROME = "monocle.epd.forceMonochrome";
 
@@ -113,6 +134,9 @@ class EPDSettings {
      * Sets the update flag for 1-bit dithering: {@code true} to dither each
      * update in an 8-bit Y8 frame buffer to 1-bit black and white, if
      * available; otherwise {@code false}. The default is {@code false}.
+     *
+     * @implNote Corresponds to the {@code EPDC_FLAG_USE_DITHERING_Y1} constant
+     * in <i>linux/mxcfb.h</i>.
      */
     private static final String FLAG_USE_DITHERING_Y1 = "monocle.epd.useDitheringY1";
 
@@ -120,17 +144,20 @@ class EPDSettings {
      * Sets the update flag for 4-bit dithering: {@code true} to dither each
      * update in an 8-bit Y8 frame buffer to 4-bit grayscale, if available;
      * otherwise {@code false}. The default is {@code false}.
+     *
+     * @implNote Corresponds to the {@code EPDC_FLAG_USE_DITHERING_Y4} constant
+     * in <i>linux/mxcfb.h</i>.
      */
     private static final String FLAG_USE_DITHERING_Y4 = "monocle.epd.useDitheringY4";
 
     /**
      * Indicates whether to work around a bug on devices, such as the Kobo Clara
-     * HD Model N249, that require a screen width equal to the visible
+     * HD (Model N249), which require a screen width equal to the visible
      * x-resolution, instead of the normal virtual x-resolution, when using an
      * unrotated, uninverted, 8-bit frame buffer: {@code true} to work around
-     * the bug; otherwise {@code false}.
+     * the bug; otherwise {@code false}. The default is {@code false}.
      */
-    private static final String MODEL_N249 = "monocle.epd.modelN249";
+    private static final String FIX_KOBO_N249 = "monocle.epd.fixKoboN249";
 
     private static final String[] EPD_PROPERTIES = {
         BITS_PER_PIXEL,
@@ -142,7 +169,7 @@ class EPDSettings {
         FLAG_FORCE_MONOCHROME,
         FLAG_USE_DITHERING_Y1,
         FLAG_USE_DITHERING_Y4,
-        MODEL_N249
+        FIX_KOBO_N249
     };
 
     private static final int BITS_PER_PIXEL_DEFAULT = Integer.SIZE;
@@ -188,7 +215,7 @@ class EPDSettings {
     private final boolean flagForceMonochrome;
     private final boolean flagUseDitheringY1;
     private final boolean flagUseDitheringY4;
-    private final boolean modelN249;
+    private final boolean fixKoboN249;
 
     final int bitsPerPixel;
     final int rotate;
@@ -196,7 +223,7 @@ class EPDSettings {
     final int waveformMode;
     final int grayscale;
     final int flags;
-    final boolean widthVisible;
+    final boolean getWidthVisible;
 
     /**
      * Creates a new EPDSettings, capturing the current values of the EPD system
@@ -239,8 +266,8 @@ class EPDSettings {
                 | (flagUseDitheringY1 ? EPDSystem.EPDC_FLAG_USE_DITHERING_Y1 : 0)
                 | (flagUseDitheringY4 ? EPDSystem.EPDC_FLAG_USE_DITHERING_Y4 : 0);
 
-        modelN249 = Boolean.getBoolean(MODEL_N249);
-        widthVisible = modelN249 && rotate == EPDSystem.FB_ROTATE_UR
+        fixKoboN249 = Boolean.getBoolean(FIX_KOBO_N249);
+        getWidthVisible = fixKoboN249 && rotate == EPDSystem.FB_ROTATE_UR
                 && grayscale == EPDSystem.GRAYSCALE_8BIT;
     }
 
@@ -271,9 +298,9 @@ class EPDSettings {
     public String toString() {
         return MessageFormat.format("{0}[bitsPerPixel={1} rotate={2} "
                 + "noWait={3} waveformMode={4} grayscale={5} flags=0x{6} "
-                + "widthVisible={7}]",
+                + "getWidthVisible={7}]",
                 getClass().getName(), bitsPerPixel, rotate,
                 noWait, waveformMode, grayscale, Integer.toHexString(flags),
-                widthVisible);
+                getWidthVisible);
     }
 }
