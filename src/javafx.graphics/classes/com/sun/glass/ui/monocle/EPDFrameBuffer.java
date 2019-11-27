@@ -672,13 +672,13 @@ class EPDFrameBuffer {
     }
 
     /**
-     * Gets the width in pixels of the frame buffer. See the notes for the
+     * Gets the frame buffer width in pixels. See the notes for the
      * {@linkplain EPDFrameBuffer#EPDFrameBuffer constructor} above.
      *
-     * @implNote When using an unrotated, uninverted, 8-bit frame buffer, the
-     * Kobo Clara HD (Model N249) works only when this method returns the
-     * visible x-resolution ({@code xres}) instead of the normal virtual
-     * x-resolution ({@code xresVirtual}).
+     * @implNote When using an 8-bit, unrotated, and uninverted frame buffer in
+     * the Y8 pixel format, the Kobo Clara HD (Model N249) works only when this
+     * method returns the visible x-resolution ({@code xres}) instead of the
+     * normal virtual x-resolution ({@code xresVirtual}).
      *
      * @return the width in pixels
      */
@@ -687,16 +687,16 @@ class EPDFrameBuffer {
     }
 
     /**
-     * Gets the visible vertical resolution of the frame buffer.
+     * Gets the frame buffer height in pixels.
      *
-     * @return the visible height in pixels
+     * @return the height in pixels
      */
     int getHeight() {
         return yres;
     }
 
     /**
-     * Gets the color depth of the frame buffer.
+     * Gets the frame buffer color depth in bits per pixel.
      *
      * @return the color depth in bits per pixel
      */

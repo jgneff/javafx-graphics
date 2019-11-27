@@ -151,13 +151,14 @@ class EPDSettings {
     private static final String FLAG_USE_DITHERING_Y4 = "monocle.epd.useDitheringY4";
 
     /**
-     * Indicates whether to work around a bug on devices, such as the Kobo Clara
-     * HD (Model N249), which require a screen width equal to the visible
+     * Indicates whether to work around the bug on devices, such as the Kobo
+     * Clara HD (Model N249), which require a screen width equal to the visible
      * x-resolution, instead of the normal virtual x-resolution, when using an
-     * unrotated, uninverted, 8-bit frame buffer: {@code true} to work around
-     * the bug; otherwise {@code false}. The default is {@code false}.
+     * 8-bit, unrotated, and uninverted frame buffer in the Y8 pixel format:
+     * {@code true} to work around the bug; otherwise {@code false}. The default
+     * is {@code false}.
      */
-    private static final String FIX_KOBO_N249 = "monocle.epd.fixKoboN249";
+    private static final String FIX_WIDTH_Y8UR = "monocle.epd.fixWidthY8UR";
 
     private static final String[] EPD_PROPERTIES = {
         BITS_PER_PIXEL,
@@ -169,7 +170,7 @@ class EPDSettings {
         FLAG_FORCE_MONOCHROME,
         FLAG_USE_DITHERING_Y1,
         FLAG_USE_DITHERING_Y4,
-        FIX_KOBO_N249
+        FIX_WIDTH_Y8UR
     };
 
     private static final int BITS_PER_PIXEL_DEFAULT = Integer.SIZE;
@@ -215,7 +216,7 @@ class EPDSettings {
     private final boolean flagForceMonochrome;
     private final boolean flagUseDitheringY1;
     private final boolean flagUseDitheringY4;
-    private final boolean fixKoboN249;
+    private final boolean fixWidthY8UR;
 
     final int bitsPerPixel;
     final int rotate;
@@ -266,9 +267,9 @@ class EPDSettings {
                 | (flagUseDitheringY1 ? EPDSystem.EPDC_FLAG_USE_DITHERING_Y1 : 0)
                 | (flagUseDitheringY4 ? EPDSystem.EPDC_FLAG_USE_DITHERING_Y4 : 0);
 
-        fixKoboN249 = Boolean.getBoolean(FIX_KOBO_N249);
-        getWidthVisible = fixKoboN249 && rotate == EPDSystem.FB_ROTATE_UR
-                && grayscale == EPDSystem.GRAYSCALE_8BIT;
+        fixWidthY8UR = Boolean.getBoolean(FIX_WIDTH_Y8UR);
+        getWidthVisible = fixWidthY8UR && grayscale == EPDSystem.GRAYSCALE_8BIT
+                && rotate == EPDSystem.FB_ROTATE_UR;
     }
 
     /**

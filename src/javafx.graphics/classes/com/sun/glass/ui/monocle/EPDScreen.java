@@ -99,6 +99,8 @@ class EPDScreen implements NativeScreen {
             width = fbDevice.getWidth();
             height = fbDevice.getHeight();
             bitDepth = fbDevice.getBitDepth();
+            logger.fine("Native screen: {0} px × {1} px × {2} bits/px",
+                    width, height, bitDepth);
 
             /*
              * If the Linux frame buffer is configured for 32-bit color, compose
