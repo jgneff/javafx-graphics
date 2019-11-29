@@ -99,7 +99,7 @@ class EPDScreen implements NativeScreen {
             width = fbDevice.getWidth();
             height = fbDevice.getHeight();
             bitDepth = fbDevice.getBitDepth();
-            logger.fine("Native screen: {0} px × {1} px × {2} bits/px",
+            logger.fine("Native screen geometry: {0} px × {1} px × {2} bpp",
                     width, height, bitDepth);
 
             /*
