@@ -177,7 +177,7 @@ class EPDSystem {
     static final int FB_POWERDOWN_DISABLE = -1;
 
     /**
-     * Initialization waveform (0x0...0xF → 0xF in ~4000 ms). Clears the screen
+     * Initialization waveform (0x0...0xF to 0xF in ~4000 ms). Clears the screen
      * to all white.
      * <p>
      * "A first exemplary drive scheme provides waveforms that may be used to
@@ -189,7 +189,7 @@ class EPDSystem {
     static final int WAVEFORM_MODE_INIT = 0;
 
     /**
-     * Direct update waveform (0x0...0xF → 0x0 or 0xF in ~260 ms). Changes gray
+     * Direct update waveform (0x0...0xF to 0x0 or 0xF in ~260 ms). Changes gray
      * pixels to black or white.
      * <p>
      * "A second exemplary drive scheme provides waveforms that may be used to
@@ -201,7 +201,7 @@ class EPDSystem {
     static final int WAVEFORM_MODE_DU = 1;
 
     /**
-     * Gray 4-level waveform (0x0...0xF → 0x0, 0x5, 0xA, or 0xF in ~500 ms).
+     * Gray 4-level waveform (0x0...0xF to 0x0, 0x5, 0xA, or 0xF in ~500 ms).
      * Supports 2-bit grayscale images and text with lower quality.
      * <p>
      * "A third exemplary drive scheme provides waveforms that may be used to
@@ -214,8 +214,8 @@ class EPDSystem {
     static final int WAVEFORM_MODE_GC4 = 3;
 
     /**
-     * Gray 16-level waveform (0x0...0xF → 0x0...0xF in ~760 ms). Supports 4-bit
-     * grayscale images and text with high quality.
+     * Gray 16-level waveform (0x0...0xF to 0x0...0xF in ~760 ms). Supports
+     * 4-bit grayscale images and text with high quality.
      * <p>
      * "A fourth exemplary drive scheme provides waveforms that may be used to
      * change the display state of a pixel from any initial display state to a
@@ -227,7 +227,7 @@ class EPDSystem {
     static final int WAVEFORM_MODE_GC16 = 2;
 
     /**
-     * Animation waveform (0x0 or 0xF → 0x0 or 0xF in ~120 ms). Provides a fast
+     * Animation waveform (0x0 or 0xF to 0x0 or 0xF in ~120 ms). Provides a fast
      * 1-bit black-and-white animation mode of up to eight frames per second.
      * <p>
      * "A fifth exemplary drive scheme provides waveforms that may be used to

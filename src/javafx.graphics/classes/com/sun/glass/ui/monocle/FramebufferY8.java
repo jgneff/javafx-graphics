@@ -93,9 +93,9 @@ class FramebufferY8 extends Framebuffer {
      * which defines the same primaries and white point as the sRGB color space.
      * <pre>{@code
      * Simple average:  Y' = (R' + G' + B') / 3
-     * Rec. 601 (SDTV): Y' = 0.299  × R' + 0.587  × G' + 0.114  × B'
-     * Rec. 709 (HDTV): Y' = 0.2126 × R' + 0.7152 × G' + 0.0722 × B'
-     * Rec. 2100 (HDR): Y' = 0.2627 × R' + 0.6780 × G' + 0.0593 × B'
+     * Rec. 601 (SDTV): Y' = 0.299  * R' + 0.587  * G' + 0.114  * B'
+     * Rec. 709 (HDTV): Y' = 0.2126 * R' + 0.7152 * G' + 0.0722 * B'
+     * Rec. 2100 (HDR): Y' = 0.2627 * R' + 0.6780 * G' + 0.0593 * B'
      * }</pre>
      *
      * @implNote Java rounds toward zero when converting a {@code float} to an

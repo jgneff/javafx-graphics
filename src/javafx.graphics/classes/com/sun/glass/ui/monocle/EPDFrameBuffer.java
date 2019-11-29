@@ -340,7 +340,7 @@ class EPDFrameBuffer {
     private void setTemperature(int temp) {
         int rc = driver.ioctl(fd, driver.MXCFB_SET_TEMPERATURE, temp);
         if (rc != 0) {
-            logger.severe("Failed setting temperature to {2} °C: {0} ({1})",
+            logger.severe("Failed setting temperature to {2} degrees Celsius: {0} ({1})",
                     system.getErrorMessage(), system.errno(), temp);
         }
     }
@@ -436,7 +436,7 @@ class EPDFrameBuffer {
             logger.severe("Failed sending update {2}: {0} ({1})",
                     system.getErrorMessage(), system.errno(), Integer.toUnsignedLong(updateMarker));
         } else if (logger.isLoggable(Level.FINER)) {
-            logger.finer("Sent update: {0} × {1}, waveform {2}, selected {3}, flags 0x{4}, marker {5}",
+            logger.finer("Sent update: {0} x {1}, waveform {2}, selected {3}, flags 0x{4}, marker {5}",
                     update.getUpdateRegionWidth(update.p), update.getUpdateRegionHeight(update.p),
                     waveformMode, update.getWaveformMode(update.p),
                     Integer.toHexString(update.getFlags(update.p)).toUpperCase(),

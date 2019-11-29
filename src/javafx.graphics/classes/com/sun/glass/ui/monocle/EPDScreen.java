@@ -60,7 +60,7 @@ class EPDScreen implements NativeScreen {
 
     /**
      * The density of this screen in pixels per inch. For now, the value is
-     * hard-coded to the density of a 6-inch display panel with 800 × 600 px at
+     * hard-coded to the density of a 6-inch display panel with 800 x 600 px at
      * 167 ppi.
      */
     private static final int DPI = 167;
@@ -99,7 +99,7 @@ class EPDScreen implements NativeScreen {
             width = fbDevice.getWidth();
             height = fbDevice.getHeight();
             bitDepth = fbDevice.getBitDepth();
-            logger.fine("Native screen geometry: {0} px × {1} px × {2} bpp",
+            logger.fine("Native screen geometry: {0} px x {1} px x {2} bpp",
                     width, height, bitDepth);
 
             /*
