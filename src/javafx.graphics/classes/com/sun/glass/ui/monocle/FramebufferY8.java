@@ -99,8 +99,9 @@ class FramebufferY8 extends Framebuffer {
      * }</pre>
      *
      * @implNote Java rounds toward zero when converting a {@code float} to an
-     * {@code int}, so this method adds 0.5 before the type conversion to round
-     * to the nearest integer.
+     * {@code int}. The calculation of luma could be rounded to the nearest
+     * integer by adding 0.5 before the type conversion, but the extra operation
+     * seems unnecessary for a display with only 16 levels of gray.
      *
      * @param source the source integer buffer in ARGB32 format
      * @param target the target byte buffer in Y8 format
@@ -110,7 +111,7 @@ class FramebufferY8 extends Framebuffer {
         int r = (pixel32 >> 16) & 0xFF;
         int g = (pixel32 >> 8) & 0xFF;
         int b = pixel32 & 0xFF;
-        int y = (int) (0.2126f * r + 0.7152f * g + 0.0722f * b + 0.5f);
+        int y = (int) (0.2126f * r + 0.7152f * g + 0.0722f * b);
         target.put((byte) y);
     }
 
