@@ -76,7 +76,7 @@ class EPDSettings {
      * @implNote Corresponds to the {@code GRAYSCALE_8BIT_INVERTED} constant in
      * <i>linux/mxcfb.h</i>.
      */
-    private static final String Y8_INVERTED = "monocle.epd.y8inverted";
+    private static final String Y8_INVERTED = "monocle.epd.Y8Inverted";
 
     /**
      * Indicates whether to wait for the previous update to complete before
