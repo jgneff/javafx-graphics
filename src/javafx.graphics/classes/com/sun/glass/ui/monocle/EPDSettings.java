@@ -151,12 +151,12 @@ class EPDSettings {
     private static final String FLAG_USE_DITHERING_Y4 = "monocle.epd.useDitheringY4";
 
     /**
-     * Indicates whether to work around the bug on devices, such as the Kobo
-     * Clara HD (Model N249), which require a screen width equal to the visible
-     * x-resolution, instead of the normal virtual x-resolution, when using an
-     * 8-bit, unrotated, and uninverted frame buffer in the Y8 pixel format:
-     * {@code true} to work around the bug; otherwise {@code false}. The default
-     * is {@code false}.
+     * Indicates whether to work around the bug found on devices, such as the
+     * Kobo Clara HD Model N249, which require a screen width equal to the
+     * visible x-resolution, instead of the normal virtual x-resolution, when
+     * using an 8-bit, unrotated, and uninverted frame buffer in the Y8 pixel
+     * format: {@code true} to work around the bug; otherwise {@code false}. The
+     * default is {@code false}.
      */
     private static final String FIX_WIDTH_Y8UR = "monocle.epd.fixWidthY8UR";
 

@@ -593,9 +593,9 @@ class EPDFrameBuffer {
     /**
      * Creates a new mapping of the Linux frame buffer device into memory.
      *
-     * @implNote The virtual y-resolution reported by the frame buffer device
-     * can be wrong, as shown by the following example on the Kobo Glo HD Model
-     * N437 which reports 2,304 pixels when the correct value is 1,152
+     * @implNote The virtual y-resolution reported by the device driver can be
+     * wrong, as shown by the following example on the Kobo Glo HD Model N437
+     * which reports 2,304 pixels when the correct value is 1,152 pixels
      * (6,782,976 / 5,888). Therefore, this method cannot use the frame buffer
      * virtual resolution to calculate its size.
      *
@@ -676,7 +676,7 @@ class EPDFrameBuffer {
      * {@linkplain EPDFrameBuffer#EPDFrameBuffer constructor} above.
      *
      * @implNote When using an 8-bit, unrotated, and uninverted frame buffer in
-     * the Y8 pixel format, the Kobo Clara HD (Model N249) works only when this
+     * the Y8 pixel format, the Kobo Clara HD Model N249 works only when this
      * method returns the visible x-resolution ({@code xres}) instead of the
      * normal virtual x-resolution ({@code xresVirtual}).
      *
