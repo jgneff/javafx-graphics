@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,29 +22,29 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+package com.sun.glass.ui.monocle;
 
-package com.sun.prism.es2;
+public class EGLPlatformFactory extends NativePlatformFactory {
 
-/**
- * TODO: 3D - Need documentation
- */
-class ES2Light {
-
-    float x, y, z = 0;
-    float r, g, b, w = 1;
-    float ca, la, qa, maxRange;
-
-    ES2Light(float ix, float iy, float iz, float ir, float ig, float ib, float iw, float ca, float la, float qa, float maxRange) {
-        x = ix;
-        y = iy;
-        z = iz;
-        r = ir;
-        g = ig;
-        b = ib;
-        w = iw;
-        this.ca = ca;
-        this.la = la;
-        this.qa = qa;
-        this.maxRange = maxRange;
+    @Override
+    protected boolean matches() {
+        return true;
     }
+
+    @Override
+    protected int getMajorVersion() {
+        return 1;
+    }
+
+    @Override
+    protected int getMinorVersion() {
+        return 0;
+    }
+
+    @Override
+    protected NativePlatform createNativePlatform() {
+        return new EGLPlatform();
+    }
+
+
 }

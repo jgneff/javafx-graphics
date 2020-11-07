@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013, 2019, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2020, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -22,29 +22,32 @@
  * or visit www.oracle.com if you need additional information or have any
  * questions.
  */
+package com.sun.glass.ui.monocle;
 
-package com.sun.prism.es2;
+public class EGLPlatform extends LinuxPlatform {
 
-/**
- * TODO: 3D - Need documentation
- */
-class ES2Light {
-
-    float x, y, z = 0;
-    float r, g, b, w = 1;
-    float ca, la, qa, maxRange;
-
-    ES2Light(float ix, float iy, float iz, float ir, float ig, float ib, float iw, float ca, float la, float qa, float maxRange) {
-        x = ix;
-        y = iy;
-        z = iz;
-        r = ir;
-        g = ig;
-        b = ib;
-        w = iw;
-        this.ca = ca;
-        this.la = la;
-        this.qa = qa;
-        this.maxRange = maxRange;
+    /**
+     * Create an <code>EGLPlatform</code>. If a library with specific native code is needed for this platform,
+     * it will be downloaded now. The system property <code>monocle.egl.lib</code> can be used to define the
+     * name of the library that should be loaded.
+     */
+    public EGLPlatform() {
+        String lib = System.getProperty("monocle.egl.lib");
+        if (lib != null) {
+            long handle = LinuxSystem.getLinuxSystem().dlopen(lib, LinuxSystem.RTLD_LAZY | LinuxSystem.RTLD_GLOBAL);
+            if (handle == 0) {
+                throw new UnsatisfiedLinkError("EGLPlatform failed to load the requested library " + lib);
+            }
+        }
     }
+
+    @Override
+    public synchronized AcceleratedScreen getAcceleratedScreen(int[] attributes) throws GLException {
+        if (accScreen == null) {
+            accScreen = new EGLAcceleratedScreen(attributes);
+        }
+        return accScreen;
+
+    }
+
 }
