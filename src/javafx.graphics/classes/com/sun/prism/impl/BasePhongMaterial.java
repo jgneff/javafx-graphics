@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012, 2013, Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, Oracle and/or its affiliates. All rights reserved.
  * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
  *
  * This code is free software; you can redistribute it and/or modify it
@@ -23,31 +23,19 @@
  * questions.
  */
 
-package com.sun.prism.es2;
+package com.sun.prism.impl;
 
+import com.sun.prism.PhongMaterial;
 
+public abstract class BasePhongMaterial extends BaseGraphicsResource implements PhongMaterial {
 
-class EGLX11GLDrawable extends GLDrawable {
-
-    private static native long nCreateDrawable(long nativeWindow, long nativeCtxInfo);
-    private static native long nGetDummyDrawable(long nativeCtxInfo);
-    private static native boolean nSwapBuffers(long nativeDInfo);
-
-    EGLX11GLDrawable(GLPixelFormat pixelFormat) {
-
-        super(0L, pixelFormat);
-        long nDInfo = nGetDummyDrawable(pixelFormat.getNativePFInfo());
-        setNativeDrawableInfo(nDInfo);
-    }
-
-    EGLX11GLDrawable(long nativeWindow, GLPixelFormat pixelFormat) {
-        super(nativeWindow, pixelFormat);
-        long nDInfo = nCreateDrawable(nativeWindow, pixelFormat.getNativePFInfo());
-        setNativeDrawableInfo(nDInfo);
+    protected BasePhongMaterial(Disposer.Record disposerRecord) {
+        super(disposerRecord);
     }
 
     @Override
-    boolean swapBuffers(GLContext glCtx) {
-        return nSwapBuffers(getNativeDrawableInfo());
+    public boolean isValid() {
+        return true;
     }
+
 }
